@@ -123,7 +123,8 @@ def monitor_global_resonance(verbose=True):
             if verbose:
                 print(f"  🔴 {repo_name:<28} OFFLINE — {str(exc)[:OFFLINE_ERROR_TRUNCATE]}")
 
-    global_psi = sum(total_psi) / len(total_psi) if total_psi else 0.0
+    node_count = len(total_psi)
+    global_psi = sum(total_psi) / node_count if node_count else 0.0
     now_utc = datetime.now(timezone.utc).isoformat()
 
     if verbose:
