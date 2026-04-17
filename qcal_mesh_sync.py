@@ -1,14 +1,19 @@
 import csv
 import json
+import logging
 import os
 import threading
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger("QCAL-BUS")
+
 try:
     import mcp_network.resonance as qcal
-except Exception:  # pragma: no cover
+except ImportError:  # pragma: no cover
+    logger.warning("Capa mcp_network.resonance no detectada. Operando en Modo Degradado.")
     qcal = None
 
 ROOT_DIR = Path(__file__).resolve().parent
@@ -26,8 +31,15 @@ OFFLINE_ERROR_TRUNCATE = 120
 
 
 def load_catalog():
-    with CATALOG_PATH.open("r", encoding="utf-8") as file:
-        return json.load(file)
+    if not CATALOG_PATH.exists():
+        logger.error("Fisura detectada: No se encuentra el catálogo en %s", CATALOG_PATH)
+        raise FileNotFoundError(f"Catálogo no encontrado: {CATALOG_PATH}")
+    try:
+        with CATALOG_PATH.open("r", encoding="utf-8") as file:
+            return json.load(file)
+    except json.JSONDecodeError as exc:
+        logger.error("Error de Coherencia: JSON mal formado en el catálogo: %s", exc)
+        raise
 
 
 def ensure_ledger():
@@ -120,6 +132,7 @@ def monitor_global_resonance(verbose=True):
                 "modo_real": False,
                 "error": str(exc)[:OFFLINE_ERROR_TRUNCATE],
             }
+            logger.error("Falla en llamada MCP para %s: %s", repo_name, str(exc)[:OFFLINE_ERROR_TRUNCATE])
             if verbose:
                 print(f"  🔴 {repo_name:<28} OFFLINE — {str(exc)[:OFFLINE_ERROR_TRUNCATE]}")
 
@@ -161,10 +174,23 @@ def monitor_global_resonance(verbose=True):
     return response
 
 
+def sync_mesh_with_real_sources():
+    """
+    Sincroniza la malla completa con manejo de errores robusto y
+    detección dinámica de mcp_network. Punto de entrada público del orquestador.
+    """
+    try:
+        return monitor_global_resonance()
+    except FileNotFoundError:
+        return {"global_psi": 0.0, "status": "CATALOG_NOT_FOUND"}
+    except json.JSONDecodeError:
+        return {"global_psi": 0.0, "status": "JSON_MALFORMED"}
+
+
 if __name__ == "__main__":
     while True:
         try:
-            monitor_global_resonance()
+            sync_mesh_with_real_sources()
         except Exception as exc:  # pragma: no cover
-            print(f"⚠️ Error en ciclo de sincronía: {exc}")
+            logger.error("Error en ciclo de sincronía: %s", exc)
         time.sleep(SYNC_INTERVAL_SECONDS)
