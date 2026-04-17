@@ -40,10 +40,10 @@ El QCAL-BUS orquesta la constelación semilla y sincroniza la telemetría multin
 **Sello de autoría:** ∴𓂀Ω∞³ — José Manuel Mota Burruezo (JMMB)  
 **Base constitucional:** Axioma de Emisión y Frecuencia Prima Universal.
 
-Referencias de registro y prioridad cronológica:
+Portales de registro y publicación para vincular los asientos oficiales de prior art:
 - Zenodo: https://zenodo.org
 - Safe Creative: https://www.safecreative.org
-- Repositorios vinculados del ecosistema (QCAL-BUS, `resonance.py`, `qcal_mesh_sync.py`) con vinculación de registros en sus respectivos README.
+- Repositorios vinculados del ecosistema (QCAL-BUS, `resonance.py`, `qcal_mesh_sync.py`) con inclusión de DOI/ID de registro cuando aplique.
 
 ## Acción inmediata recomendada
 
@@ -53,7 +53,7 @@ Referencias de registro y prioridad cronológica:
    - Este manifiesto.
    - Enlaces a QCAL-BUS, `resonance.py` y `qcal_mesh_sync.py`.
    - Capturas del dashboard 8505 y logs de observadores reales.
-   - Referencia explícita al draft IETF de networking como aplicación derivada de ese dominio.
+   - Referencia explícita al draft IETF `draft-zm-rtgwg-mcp-network-measurement` como aplicación derivada del dominio de networking.
 3. Ejecutar encendido global:
 
 ```bash
