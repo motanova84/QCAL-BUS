@@ -4,8 +4,10 @@ qcal_mesh_sync.py
 Motor principal de la malla QCAL-EPR.
 
 Modos de ejecución:
-  1. Loop continuo (por defecto):
+  1. Loop continuo (por defecto o con --loop):
        python qcal_mesh_sync.py
+       python qcal_mesh_sync.py --loop
+       python qcal_mesh_sync.py --loop --csv ledger/emissions_log.csv
 
   2. Servidor MCP (protocolo JSON-RPC 2.0 por stdin/stdout):
        python qcal_mesh_sync.py --mcp-server
@@ -16,6 +18,7 @@ Modos de ejecución:
        - get_emissions_log → últimas N entradas del ledger
 """
 
+import argparse
 import csv
 import json
 import os
@@ -311,14 +314,55 @@ def run_mcp_server() -> None:
             sys.stdout.flush()
 
 
+def _build_arg_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="qcal_mesh_sync",
+        description="Motor de sincronía de la malla QCAL-EPR",
+    )
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--mcp-server",
+        action="store_true",
+        help="Inicia el servidor MCP JSON-RPC 2.0 en stdin/stdout.",
+    )
+    mode.add_argument(
+        "--loop",
+        action="store_true",
+        help="Corre el monitor en loop continuo (comportamiento por defecto cuando no se pasa ningún flag).",
+    )
+    parser.add_argument(
+        "--csv",
+        metavar="PATH",
+        default=None,
+        help="Ruta al archivo CSV del ledger de emisiones (sobreescribe LEDGER_PATH).",
+    )
+    parser.add_argument(
+        "--interval",
+        metavar="SECONDS",
+        type=int,
+        default=None,
+        help="Intervalo entre ciclos en segundos (sobreescribe QCAL_SYNC_INTERVAL_SECONDS).",
+    )
+    return parser
+
+
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    if "--mcp-server" in sys.argv:
+    args = _build_arg_parser().parse_args()
+
+    if args.csv:
+        LEDGER_PATH = Path(args.csv).resolve()
+
+    if args.interval is not None:
+        SYNC_INTERVAL_SECONDS = args.interval
+
+    if args.mcp_server:
         run_mcp_server()
     else:
+        # --loop or no flag → continuous monitoring loop
         while True:
             try:
                 monitor_global_resonance()
