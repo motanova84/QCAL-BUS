@@ -1,6 +1,7 @@
 import csv
 import json
 import os
+import threading
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -19,7 +20,9 @@ GLOBAL_THRESHOLD = float(os.getenv("QCAL_GLOBAL_THRESHOLD", "0.999999"))
 SATURATION_CYCLES = int(os.getenv("QCAL_SATURATION_CYCLES", "3"))
 SYNC_INTERVAL_SECONDS = int(os.getenv("QCAL_SYNC_INTERVAL_SECONDS", "60"))
 
-_SATURATION_STREAK = 0
+_STATE = {"saturation_streak": 0}
+_STREAK_LOCK = threading.Lock()
+OFFLINE_ERROR_TRUNCATE = 120
 
 
 def load_catalog():
@@ -78,8 +81,6 @@ def append_emission(global_psi, nodes):
 
 
 def monitor_global_resonance(verbose=True):
-    global _SATURATION_STREAK
-
     catalog = load_catalog()
     nodes = catalog.get("nodes", {})
 
@@ -117,10 +118,10 @@ def monitor_global_resonance(verbose=True):
                 "layer": info.get("layer"),
                 "harmonic_factor": info.get("harmonic_factor", 1.0),
                 "modo_real": False,
-                "error": str(exc)[:120],
+                "error": str(exc)[:OFFLINE_ERROR_TRUNCATE],
             }
             if verbose:
-                print(f"  🔴 {repo_name:<28} OFFLINE — {str(exc)[:60]}")
+                print(f"  🔴 {repo_name:<28} OFFLINE — {str(exc)[:OFFLINE_ERROR_TRUNCATE]}")
 
     global_psi = sum(total_psi) / len(total_psi) if total_psi else 0.0
     now_utc = datetime.now(timezone.utc).isoformat()
@@ -129,26 +130,30 @@ def monitor_global_resonance(verbose=True):
         print("\n" + "═" * 90)
         print(f"Ψ_GLOBAL_ECOSISTEMA = {global_psi:.8f} | UTC: {now_utc}")
 
-    if global_psi >= GLOBAL_THRESHOLD:
-        _SATURATION_STREAK += 1
-    else:
-        _SATURATION_STREAK = 0
+    with _STREAK_LOCK:
+        if global_psi >= GLOBAL_THRESHOLD:
+            _STATE["saturation_streak"] += 1
+        else:
+            _STATE["saturation_streak"] = 0
+
+        current_streak = _STATE["saturation_streak"]
 
     response = {
         "status": "DRIFTING",
         "global_psi": round(global_psi, 8),
         "nodes": node_status,
-        "saturation_streak": _SATURATION_STREAK,
+        "saturation_streak": current_streak,
         "threshold": GLOBAL_THRESHOLD,
         "required_cycles": SATURATION_CYCLES,
         "timestamp": now_utc,
     }
 
-    if _SATURATION_STREAK >= SATURATION_CYCLES:
+    if current_streak >= SATURATION_CYCLES:
         emission = append_emission(global_psi, node_status)
         response["status"] = "RESONANCIA_SATURADA"
         response["emission"] = emission
-        _SATURATION_STREAK = 0
+        with _STREAK_LOCK:
+            _STATE["saturation_streak"] = 0
         if verbose:
             print("✨ COHERENCIA TOTAL LOGRADA — RESONANCIA INSTANTÁNEA ACTIVA")
             print("   Emisión πCODE-888 registrada en el ledger.")
@@ -158,5 +163,8 @@ def monitor_global_resonance(verbose=True):
 
 if __name__ == "__main__":
     while True:
-        monitor_global_resonance()
+        try:
+            monitor_global_resonance()
+        except Exception as exc:  # pragma: no cover
+            print(f"⚠️ Error en ciclo de sincronía: {exc}")
         time.sleep(SYNC_INTERVAL_SECONDS)

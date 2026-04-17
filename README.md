@@ -32,3 +32,5 @@ python dashboard/malla_qcal_epr.py
 ```
 
 Dashboard: `http://localhost:8505`
+
+> Nota: el dashboard usa el servidor de desarrollo de Flask y está pensado para entorno local.

@@ -4,6 +4,7 @@
     "version": "1.0.0",
     "f0_reference_hz": 141.7001,
     "total_nodes": 33,
+    "seed_nodes": 11,
     "last_sync": "2026-04-17T03:52:00Z"
   },
   "nodes": {

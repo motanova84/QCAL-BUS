@@ -55,4 +55,5 @@ def mesh_state():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8505)
+    print("Dashboard local activo en http://127.0.0.1:8505 (servidor Flask de desarrollo)")
+    app.run(host="127.0.0.1", port=8505, debug=False)
