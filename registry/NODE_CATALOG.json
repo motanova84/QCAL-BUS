@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "name": "QCAL-EPR Universal Resonance Bus",
+    "version": "1.0.0",
+    "f0_reference_hz": 141.7001,
+    "total_nodes": 33,
+    "seed_nodes": 11,
+    "last_sync": "2026-04-17T03:52:00Z"
+  },
+  "nodes": {
+    "riemann-adelic": {
+      "mcp_id": "riemann-mcp-server",
+      "role": "núcleo",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "núcleo"
+    },
+    "141-hz": {
+      "mcp_id": "141-hz",
+      "role": "núcleo",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "núcleo"
+    },
+    "3d-navier-stokes": {
+      "mcp_id": "navier-mcp-server",
+      "role": "cuerpo",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "cuerpo"
+    },
+    "p-np-qcal": {
+      "mcp_id": "p-np-mcp-server",
+      "role": "cuerpo",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "cuerpo"
+    },
+    "ramsey-qcal": {
+      "mcp_id": "ramsey-qcal",
+      "role": "mente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "mente"
+    },
+    "adelic-bsd": {
+      "mcp_id": "bsd-mcp-server",
+      "role": "mente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "mente"
+    },
+    "biologia-cuantica-noesica": {
+      "mcp_id": "biologia-cuantica-noesica",
+      "role": "vida",
+      "base_frequency": 70.85005,
+      "harmonic_factor": 0.5,
+      "layer": "vida"
+    },
+    "noesis88": {
+      "mcp_id": "noesis88",
+      "role": "logos",
+      "base_frequency": 888.0,
+      "harmonic_factor": 6.266,
+      "layer": "logos"
+    },
+    "LOGOSNOESIS": {
+      "mcp_id": "LOGOSNOESIS",
+      "role": "logos",
+      "base_frequency": 888.0,
+      "harmonic_factor": 6.266,
+      "layer": "logos"
+    },
+    "economia-qcal-nodo-semilla": {
+      "mcp_id": "nodo-semilla-v1",
+      "role": "economía",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "economía"
+    },
+    "quantum-internet-qcal": {
+      "mcp_id": "quantum-internet-qcal",
+      "role": "logos",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "logos"
+    }
+  }
+}
