@@ -41,6 +41,17 @@ def ensure_ledger():
         )
 
 
+def extract_node_id(node):
+    """Extrae el identificador canónico con jerarquía de prioridad."""
+    return node.get("id") or node.get("mcp_id") or node.get("node_id") or node.get("name") or "unknown_node"
+
+
+def format_error_msg(error, length=50):
+    """Truncado inteligente de errores para diagnósticos limpios."""
+    msg = str(error)
+    return (msg[:length] + "...") if len(msg) > length else msg
+
+
 def check_node_resonance(mcp_id):
     if qcal is None:
         raise RuntimeError("mcp_network.resonance no está disponible")
@@ -185,13 +196,8 @@ def sync_mesh_with_real_sources():
     node_results = []
 
     for node in nodes:
-        node_id = (
-            node.get("id")
-            or node.get("mcp_id")
-            or node.get("node_id")
-            or node.get("name")
-        )
-        if not node_id:
+        node_id = extract_node_id(node)
+        if node_id == "unknown_node":
             continue
 
         try:
@@ -202,7 +208,7 @@ def sync_mesh_with_real_sources():
         except Exception as exc:
             psi = 0.0
             modo_real = False
-            fuente_fisica = f"OFFLINE ({str(exc)[:OFFLINE_ERROR_TRUNCATE]})"
+            fuente_fisica = f"OFFLINE ({format_error_msg(exc)})"
 
         status_icon = "💠" if modo_real else "🌐"
         print(

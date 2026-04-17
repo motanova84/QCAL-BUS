@@ -7,7 +7,7 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from qcal_mesh_sync import monitor_global_resonance  # noqa: E402
+from qcal_mesh_sync import sync_mesh_with_real_sources  # noqa: E402
 
 app = Flask(__name__)
 
@@ -51,7 +51,7 @@ def dashboard():
 
 @app.route("/api/mesh_state")
 def mesh_state():
-    return jsonify(monitor_global_resonance(verbose=False))
+    return jsonify(sync_mesh_with_real_sources())
 
 
 if __name__ == "__main__":
