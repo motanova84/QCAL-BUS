@@ -219,7 +219,8 @@ def sync_mesh_with_real_sources():
             }
         )
 
-    global_psi = sum(total_psi) / len(total_psi) if total_psi else 0.0
+    node_count = len(total_psi)
+    global_psi = sum(total_psi) / node_count if node_count else 0.0
     return {"global_psi": round(global_psi, 8), "nodes": node_results}
 
 
