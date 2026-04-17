@@ -40,10 +40,10 @@ El QCAL-BUS orquesta la constelación semilla y sincroniza la telemetría multin
 **Sello de autoría:** ∴𓂀Ω∞³ — José Manuel Mota Burruezo (JMMB)  
 **Base constitucional:** Axioma de Emisión y Frecuencia Prima Universal.
 
-Referencias de registro y prioridad cronológica (añadir enlaces oficiales):
-- Zenodo (registro/versionado documental del protocolo MCP-QCAL-EPR).
-- Safe Creative (registro de autoría y trazabilidad intelectual).
-- Repositorios vinculados del ecosistema (QCAL-BUS, `resonance.py`, `qcal_mesh_sync.py`).
+Referencias de registro y prioridad cronológica:
+- Zenodo: https://zenodo.org
+- Safe Creative: https://www.safecreative.org
+- Repositorios vinculados del ecosistema (QCAL-BUS, `resonance.py`, `qcal_mesh_sync.py`) con vinculación de registros en sus respectivos README.
 
 ## Acción inmediata recomendada
 
