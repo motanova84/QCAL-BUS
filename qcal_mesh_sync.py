@@ -1,15 +1,31 @@
+"""
+qcal_mesh_sync.py
+=================
+Motor principal de la malla QCAL-EPR.
+
+Modos de ejecución:
+  1. Loop continuo (por defecto):
+       python qcal_mesh_sync.py
+
+  2. Servidor MCP (protocolo JSON-RPC 2.0 por stdin/stdout):
+       python qcal_mesh_sync.py --mcp-server
+
+     Herramientas MCP expuestas:
+       - get_mesh_state    → monitor_global_resonance()
+       - get_node_catalog  → catálogo completo de nodos
+       - get_emissions_log → últimas N entradas del ledger
+"""
+
 import csv
 import json
 import os
+import sys
 import threading
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-try:
-    import mcp_network.resonance as qcal
-except Exception:  # pragma: no cover
-    qcal = None
+import mcp_network.resonance as qcal  # siempre disponible dentro del repo
 
 ROOT_DIR = Path(__file__).resolve().parent
 CATALOG_PATH = ROOT_DIR / "registry" / "NODE_CATALOG.json"
@@ -19,18 +35,23 @@ EMISSION_BASE = float(os.getenv("QCAL_EMISSION_BASE", "888"))
 GLOBAL_THRESHOLD = float(os.getenv("QCAL_GLOBAL_THRESHOLD", "0.999999"))
 SATURATION_CYCLES = int(os.getenv("QCAL_SATURATION_CYCLES", "3"))
 SYNC_INTERVAL_SECONDS = int(os.getenv("QCAL_SYNC_INTERVAL_SECONDS", "60"))
+LEDGER_TAIL_DEFAULT = int(os.getenv("QCAL_LEDGER_TAIL", "50"))
 
 _STATE = {"saturation_streak": 0}
 _STREAK_LOCK = threading.Lock()
 OFFLINE_ERROR_TRUNCATE = 120
 
 
-def load_catalog():
+# ---------------------------------------------------------------------------
+# Core helpers
+# ---------------------------------------------------------------------------
+
+def load_catalog() -> dict:
     with CATALOG_PATH.open("r", encoding="utf-8") as file:
         return json.load(file)
 
 
-def ensure_ledger():
+def ensure_ledger() -> None:
     LEDGER_PATH.parent.mkdir(parents=True, exist_ok=True)
     if LEDGER_PATH.exists():
         return
@@ -41,13 +62,11 @@ def ensure_ledger():
         )
 
 
-def check_node_resonance(mcp_id):
-    if qcal is None:
-        raise RuntimeError("mcp_network.resonance no está disponible")
+def check_node_resonance(mcp_id: str) -> dict:
     return qcal.check_node_resonance(mcp_id)
 
 
-def calculate_emission(global_psi, nodes):
+def calculate_emission(global_psi: float, nodes: dict) -> float:
     if not nodes:
         return 0.0
     harmonic_sum = sum(info.get("harmonic_factor", 1.0) for info in nodes.values())
@@ -55,7 +74,7 @@ def calculate_emission(global_psi, nodes):
     return round(EMISSION_BASE * global_psi * harmonic_avg, 6)
 
 
-def append_emission(global_psi, nodes):
+def append_emission(global_psi: float, nodes: dict) -> dict:
     ensure_ledger()
     timestamp = datetime.now(timezone.utc).isoformat()
     emission_amount = calculate_emission(global_psi, nodes)
@@ -80,7 +99,22 @@ def append_emission(global_psi, nodes):
     }
 
 
-def monitor_global_resonance(verbose=True):
+def read_emissions_log(tail: int = LEDGER_TAIL_DEFAULT) -> list[dict]:
+    """Retorna las últimas *tail* entradas del ledger como lista de dicts."""
+    ensure_ledger()
+    rows = []
+    with LEDGER_PATH.open("r", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            rows.append(row)
+    return rows[-tail:] if tail > 0 else rows
+
+
+# ---------------------------------------------------------------------------
+# Main monitor
+# ---------------------------------------------------------------------------
+
+def monitor_global_resonance(verbose: bool = True) -> dict:
     catalog = load_catalog()
     nodes = catalog.get("nodes", {})
 
@@ -106,7 +140,7 @@ def monitor_global_resonance(verbose=True):
             if verbose:
                 emoji = "🟢" if psi > 0.99 else "🟡" if psi > 0.95 else "🔴"
                 print(
-                    f"  {emoji} {repo_name:<28} Ψ = {psi:.6f} "
+                    f"  {emoji} {repo_name:<30} Ψ = {psi:.6f} "
                     f"→ {node_status[repo_name]['resonance']} ({info.get('role')})"
                 )
         except Exception as exc:
@@ -121,7 +155,7 @@ def monitor_global_resonance(verbose=True):
                 "error": str(exc)[:OFFLINE_ERROR_TRUNCATE],
             }
             if verbose:
-                print(f"  🔴 {repo_name:<28} OFFLINE — {str(exc)[:OFFLINE_ERROR_TRUNCATE]}")
+                print(f"  🔴 {repo_name:<30} OFFLINE — {str(exc)[:OFFLINE_ERROR_TRUNCATE]}")
 
     global_psi = sum(total_psi) / len(total_psi) if total_psi else 0.0
     now_utc = datetime.now(timezone.utc).isoformat()
@@ -161,10 +195,133 @@ def monitor_global_resonance(verbose=True):
     return response
 
 
-if __name__ == "__main__":
-    while True:
+# ---------------------------------------------------------------------------
+# MCP JSON-RPC 2.0 server (stdin/stdout)
+# ---------------------------------------------------------------------------
+
+_MCP_TOOLS = {
+    "get_mesh_state": {
+        "description": "Retorna el estado actual de la malla QCAL-EPR incluyendo Ψ_GLOBAL y todos los nodos.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {},
+        },
+    },
+    "get_node_catalog": {
+        "description": "Retorna el catálogo completo de nodos MCP registrados en la malla QCAL.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {},
+        },
+    },
+    "get_emissions_log": {
+        "description": "Retorna las últimas entradas del ledger de emisiones πCODE-888.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "tail": {
+                    "type": "integer",
+                    "description": "Número de entradas a retornar (por defecto 50).",
+                    "default": 50,
+                }
+            },
+        },
+    },
+}
+
+
+def _mcp_list_tools() -> dict:
+    return {"tools": [{"name": k, **v} for k, v in _MCP_TOOLS.items()]}
+
+
+def _mcp_call_tool(name: str, arguments: dict) -> dict:
+    if name == "get_mesh_state":
+        result = monitor_global_resonance(verbose=False)
+        return {"content": [{"type": "text", "text": json.dumps(result, ensure_ascii=False)}]}
+
+    if name == "get_node_catalog":
+        catalog = load_catalog()
+        return {"content": [{"type": "text", "text": json.dumps(catalog, ensure_ascii=False)}]}
+
+    if name == "get_emissions_log":
+        tail = int(arguments.get("tail", LEDGER_TAIL_DEFAULT))
+        entries = read_emissions_log(tail=tail)
+        return {"content": [{"type": "text", "text": json.dumps(entries, ensure_ascii=False)}]}
+
+    return {"isError": True, "content": [{"type": "text", "text": f"Herramienta desconocida: {name!r}"}]}
+
+
+def _mcp_handle(request: dict) -> dict | None:
+    """Procesa una solicitud JSON-RPC 2.0 y retorna la respuesta (o None para notificaciones)."""
+    if not isinstance(request, dict):
+        return {"jsonrpc": "2.0", "id": None, "error": {"code": -32600, "message": "Solicitud inválida"}}
+
+    req_id = request.get("id")
+    method = request.get("method")
+    params = request.get("params", {})
+
+    if not isinstance(method, str) or not method:
+        return {"jsonrpc": "2.0", "id": req_id, "error": {"code": -32600, "message": "Campo 'method' faltante o inválido"}}
+
+    def ok(result: dict) -> dict:
+        return {"jsonrpc": "2.0", "id": req_id, "result": result}
+
+    def err(code: int, message: str) -> dict:
+        return {"jsonrpc": "2.0", "id": req_id, "error": {"code": code, "message": message}}
+
+    if method == "initialize":
+        return ok({
+            "protocolVersion": "2024-11-05",
+            "capabilities": {"tools": {}},
+            "serverInfo": {"name": "qcal-mesh-bus", "version": "2.0.0"},
+        })
+
+    if method == "tools/list":
+        return ok(_mcp_list_tools())
+
+    if method == "tools/call":
+        tool_name = params.get("name", "")
+        arguments = params.get("arguments", {})
+        return ok(_mcp_call_tool(tool_name, arguments))
+
+    # Notificaciones (sin id) — no requieren respuesta
+    if req_id is None:
+        return None
+
+    return err(-32601, f"Método no encontrado: {method!r}")
+
+
+def run_mcp_server() -> None:
+    """Bucle principal del servidor MCP (stdin/stdout, JSON-RPC 2.0)."""
+    for raw_line in sys.stdin:
+        raw_line = raw_line.strip()
+        if not raw_line:
+            continue
         try:
-            monitor_global_resonance()
-        except Exception as exc:  # pragma: no cover
-            print(f"⚠️ Error en ciclo de sincronía: {exc}")
-        time.sleep(SYNC_INTERVAL_SECONDS)
+            request = json.loads(raw_line)
+        except json.JSONDecodeError as exc:
+            response = {"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": str(exc)}}
+            sys.stdout.write(json.dumps(response) + "\n")
+            sys.stdout.flush()
+            continue
+
+        response = _mcp_handle(request)
+        if response is not None:
+            sys.stdout.write(json.dumps(response, ensure_ascii=False) + "\n")
+            sys.stdout.flush()
+
+
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
+
+if __name__ == "__main__":
+    if "--mcp-server" in sys.argv:
+        run_mcp_server()
+    else:
+        while True:
+            try:
+                monitor_global_resonance()
+            except Exception as exc:  # pragma: no cover
+                print(f"⚠️ Error en ciclo de sincronía: {exc}")
+            time.sleep(SYNC_INTERVAL_SECONDS)

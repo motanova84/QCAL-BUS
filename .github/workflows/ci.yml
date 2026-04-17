@@ -1,0 +1,76 @@
+name: QCAL-BUS CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test & Integrity Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install flask pytest
+
+      - name: Run tests
+        env:
+          QCAL_REAL_TESTS: "0"
+        run: pytest tests/ -v
+
+      - name: Verify catalog integrity
+        env:
+          QCAL_REAL_TESTS: "0"
+        run: python -c "
+import json, sys
+data = json.load(open('registry/NODE_CATALOG.json'))
+declared = data['meta']['total_nodes']
+actual = len(data['nodes'])
+if actual != declared:
+    print(f'ERROR: meta.total_nodes={declared} pero hay {actual} nodos', file=sys.stderr)
+    sys.exit(1)
+print(f'OK: {actual} nodos registrados')
+"
+
+      - name: Verify ledger header
+        env:
+          QCAL_REAL_TESTS: "0"
+        run: python -c "
+from qcal_mesh_sync import ensure_ledger, LEDGER_PATH
+ensure_ledger()
+import csv
+with open(LEDGER_PATH) as f:
+    h = next(csv.reader(f))
+expected = ['timestamp', 'global_psi', 'emission_amount', 'status', 'transaction_id']
+assert h == expected, f'Header inesperado: {h}'
+print('OK: ledger header correcto')
+"
+
+      - name: Smoke test MCP server (tools/list)
+        env:
+          QCAL_REAL_TESTS: "0"
+        run: |
+          echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' \
+            | python qcal_mesh_sync.py --mcp-server \
+            | python -c "
+import sys, json
+line = sys.stdin.readline()
+data = json.loads(line)
+tools = data['result']['tools']
+names = [t['name'] for t in tools]
+assert 'get_mesh_state' in names
+assert 'get_node_catalog' in names
+assert 'get_emissions_log' in names
+print('OK: MCP tools/list =>', names)
+"
