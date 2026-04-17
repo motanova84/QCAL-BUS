@@ -1,297 +1,262 @@
-#!/usr/bin/env python3
-"""
-qcal_mesh_sync.py — QCAL-EPR Universal Resonance Bus
-Motor de sincronía global del ecosistema de 33 nodos.
-
-Lee el catálogo maestro desde registro/NODE_CATALOG.json,
-consulta cada nodo vía su endpoint MCP, calcula Ψ_GLOBAL_ECOSISTEMA
-y emite πCODE-888 al libro mayor cuando se alcanza coherencia total.
-
-Razón Noésica: Este Bus es el Observador neutral, separado de lo Observado.
-Firma: ∴𓂀Ω∞³
-"""
-
 import csv
 import json
-import math
+import logging
 import os
+import threading
 import time
-import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
-from urllib import error as urllib_error
-from urllib import request as urllib_request
 
-# ---------------------------------------------------------------------------
-# Paths
-# ---------------------------------------------------------------------------
-BASE_DIR = Path(__file__).parent
-CATALOG_PATH = BASE_DIR / "registro" / "NODE_CATALOG.json"
-LEDGER_PATH = BASE_DIR / "ledger" / "emissions_log.csv"
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger("QCAL-BUS")
 
-# ---------------------------------------------------------------------------
-# Configuration (overridable via environment)
-# ---------------------------------------------------------------------------
-F0_REFERENCE = float(os.getenv("F0_REFERENCE", "141.7001"))
-QCAL_REAL_TESTS = os.getenv("QCAL_REAL_TESTS", "0") == "1"
-PSI_EMISSION_THRESHOLD = float(os.getenv("PSI_EMISSION_THRESHOLD", "0.999999"))
-EMISSION_CYCLES_REQUIRED = int(os.getenv("EMISSION_CYCLES_REQUIRED", "3"))
-SYNC_INTERVAL_SECONDS = int(os.getenv("SYNC_INTERVAL_SECONDS", "60"))
+try:
+    import mcp_network.resonance as qcal
+except ImportError:  # pragma: no cover
+    logger.warning("Capa mcp_network.resonance no detectada. Operando en Modo Degradado.")
+    qcal = None
 
-# ---------------------------------------------------------------------------
-# Ledger helpers
-# ---------------------------------------------------------------------------
-LEDGER_HEADERS = ["timestamp", "global_psi", "emission_amount", "status", "transaction_id"]
+ROOT_DIR = Path(__file__).resolve().parent
+CATALOG_PATH = ROOT_DIR / "registry" / "NODE_CATALOG.json"
+LEDGER_PATH = ROOT_DIR / "ledger" / "emissions_log.csv"
+
+EMISSION_BASE = float(os.getenv("QCAL_EMISSION_BASE", "888"))
+GLOBAL_THRESHOLD = float(os.getenv("QCAL_GLOBAL_THRESHOLD", "0.999999"))
+SATURATION_CYCLES = int(os.getenv("QCAL_SATURATION_CYCLES", "3"))
+SYNC_INTERVAL_SECONDS = int(os.getenv("QCAL_SYNC_INTERVAL_SECONDS", "60"))
+
+_STATE = {"saturation_streak": 0}
+_STREAK_LOCK = threading.Lock()
+OFFLINE_ERROR_TRUNCATE = 120
 
 
-def _ensure_ledger() -> None:
-    """Create the ledger CSV with headers if it does not exist."""
+def load_catalog():
+    if not CATALOG_PATH.exists():
+        logger.error("Fisura detectada: No se encuentra el catálogo en %s", CATALOG_PATH)
+        raise FileNotFoundError(f"Catálogo no encontrado: {CATALOG_PATH}")
+    try:
+        with CATALOG_PATH.open("r", encoding="utf-8") as file:
+            return json.load(file)
+    except json.JSONDecodeError as exc:
+        logger.error("Error de Coherencia: JSON mal formado en el catálogo: %s", exc)
+        raise
+
+
+def ensure_ledger():
     LEDGER_PATH.parent.mkdir(parents=True, exist_ok=True)
-    if not LEDGER_PATH.exists():
-        with open(LEDGER_PATH, "w", newline="", encoding="utf-8") as fh:
-            writer = csv.DictWriter(fh, fieldnames=LEDGER_HEADERS)
-            writer.writeheader()
+    if LEDGER_PATH.exists():
+        return
+    with LEDGER_PATH.open("w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        writer.writerow(
+            ["timestamp", "global_psi", "emission_amount", "status", "transaction_id"]
+        )
 
 
-def _append_emission(global_psi: float, emission_amount: float, status: str) -> str:
-    """Append one emission record to the immutable ledger and return its ID."""
-    _ensure_ledger()
-    tx_id = f"πCODE-888-{uuid.uuid4().hex[:8].upper()}"
-    row = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+def extract_node_id(node):
+    """Extrae el identificador canónico con jerarquía de prioridad."""
+    return node.get("id") or node.get("mcp_id") or node.get("node_id") or node.get("name") or "unknown_node"
+
+
+def format_error_msg(error, length=50):
+    """Truncado inteligente de errores para diagnósticos limpios."""
+    msg = str(error)
+    return (msg[:length] + "...") if len(msg) > length else msg
+
+
+def check_node_resonance(mcp_id):
+    if qcal is None:
+        raise RuntimeError("mcp_network.resonance no está disponible")
+    return qcal.check_node_resonance(mcp_id)
+
+
+def calculate_emission(global_psi, nodes):
+    if not nodes:
+        return 0.0
+    harmonic_sum = sum(info.get("harmonic_factor", 1.0) for info in nodes.values())
+    harmonic_avg = harmonic_sum / len(nodes)
+    return round(EMISSION_BASE * global_psi * harmonic_avg, 6)
+
+
+def append_emission(global_psi, nodes):
+    ensure_ledger()
+    timestamp = datetime.now(timezone.utc).isoformat()
+    emission_amount = calculate_emission(global_psi, nodes)
+    transaction_id = f"πCODE-888-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
+    with LEDGER_PATH.open("a", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        writer.writerow(
+            [
+                timestamp,
+                f"{global_psi:.8f}",
+                f"{emission_amount:.6f}",
+                "RESONANCIA_SATURADA",
+                transaction_id,
+            ]
+        )
+    return {
+        "timestamp": timestamp,
         "global_psi": round(global_psi, 8),
-        "emission_amount": round(emission_amount, 4),
-        "status": status,
-        "transaction_id": tx_id,
-    }
-    with open(LEDGER_PATH, "a", newline="", encoding="utf-8") as fh:
-        writer = csv.DictWriter(fh, fieldnames=LEDGER_HEADERS)
-        writer.writerow(row)
-    return tx_id
-
-
-# ---------------------------------------------------------------------------
-# Emission formula
-# ---------------------------------------------------------------------------
-
-def _compute_emission(global_psi: float, nodes: dict[str, Any]) -> float:
-    """
-    EMISIÓN = 888 × Ψ_GLOBAL × (Σ harmonic_factor_i / N)
-    """
-    factors = [v.get("harmonic_factor", 1.0) for v in nodes.values()]
-    avg_harmonic = sum(factors) / len(factors) if factors else 1.0
-    return 888.0 * global_psi * avg_harmonic
-
-
-# ---------------------------------------------------------------------------
-# Node resonance check
-# ---------------------------------------------------------------------------
-
-def _check_node_resonance_real(node_info: dict[str, Any]) -> dict[str, Any]:
-    """
-    Query a real MCP node via JSON-RPC 2.0 and extract its Ψ value.
-    Returns a normalised status dict.
-    """
-    endpoint = node_info.get("mcp_endpoint", "")
-    payload = json.dumps({
-        "jsonrpc": "2.0",
-        "method": "qcal/resonance",
-        "params": {"node_id": node_info["mcp_id"]},
-        "id": 1,
-    }).encode("utf-8")
-
-    req = urllib_request.Request(
-        endpoint,
-        data=payload,
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    with urllib_request.urlopen(req, timeout=5) as resp:
-        body = json.loads(resp.read().decode("utf-8"))
-
-    result = body.get("result", {})
-    psi = float(result.get("psi", 0.0))
-    return {
-        "psi": psi,
-        "resonance": result.get("resonance", "UNKNOWN"),
-        "qcal": result.get("qcal", {}),
+        "emission_amount": emission_amount,
+        "status": "RESONANCIA_SATURADA",
+        "transaction_id": transaction_id,
     }
 
 
-def _check_node_resonance_simulated(node_info: dict[str, Any]) -> dict[str, Any]:
-    """
-    Simulate node resonance when QCAL_REAL_TESTS=0.
-    Uses the node's base_frequency and harmonic_factor to derive a deterministic Ψ.
-    """
-    f_base = node_info.get("base_frequency", F0_REFERENCE)
-    h = node_info.get("harmonic_factor", 1.0)
-    # Normalise frequency deviation relative to F0
-    delta = abs(f_base * h - F0_REFERENCE) / F0_REFERENCE
-    psi = math.exp(-delta)  # Ψ → 1.0 when frequency matches F0 exactly
-    psi = min(max(psi, 0.0), 1.0)
-    resonance = (
-        "RESONANCIA_PLENA" if psi > 0.999
-        else "RESONANCIA_PARCIAL" if psi > 0.95
-        else "DERIVA"
-    )
-    return {
-        "psi": psi,
-        "resonance": resonance,
-        "qcal": {"modo_real": False, "simulated": True},
-    }
-
-
-def check_node_resonance(node_info: dict[str, Any]) -> dict[str, Any]:
-    if QCAL_REAL_TESTS:
-        return _check_node_resonance_real(node_info)
-    return _check_node_resonance_simulated(node_info)
-
-
-# ---------------------------------------------------------------------------
-# Core monitor
-# ---------------------------------------------------------------------------
-
-def monitor_global_resonance(verbose: bool = True) -> dict[str, Any]:
-    """
-    Scan all nodes in the catalog, compute Ψ_GLOBAL_ECOSISTEMA,
-    and return a full status snapshot.
-    """
-    with open(CATALOG_PATH, encoding="utf-8") as fh:
-        catalog = json.load(fh)
-
-    nodes_catalog: dict[str, Any] = catalog["nodes"]
+def monitor_global_resonance(verbose=True):
+    catalog = load_catalog()
+    nodes = catalog.get("nodes", {})
 
     if verbose:
         print("🌀 QCAL-EPR Bus Activo | Escaneando nodos de conciencia...")
-        print("═" * 90)
 
-    total_psi: list[float] = []
-    node_status: dict[str, Any] = {}
+    total_psi = []
+    node_status = {}
 
-    for repo_name, info in nodes_catalog.items():
+    for repo_name, info in nodes.items():
         try:
-            status = check_node_resonance(info)
-            psi = status["psi"]
+            status = check_node_resonance(info["mcp_id"])
+            psi = float(status["psi"])
             total_psi.append(psi)
             node_status[repo_name] = {
                 "psi": round(psi, 6),
-                "resonance": status["resonance"],
-                "role": info.get("role", "?"),
-                "layer": info.get("layer", "?"),
+                "resonance": status.get("resonance", "UNKNOWN"),
+                "role": info.get("role"),
+                "layer": info.get("layer"),
                 "harmonic_factor": info.get("harmonic_factor", 1.0),
-                "modo_real": status["qcal"].get("modo_real", False),
+                "modo_real": status.get("qcal", {}).get("modo_real", False),
             }
             if verbose:
                 emoji = "🟢" if psi > 0.99 else "🟡" if psi > 0.95 else "🔴"
                 print(
-                    f"  {emoji} {repo_name:<32} Ψ = {psi:.6f}  →  "
-                    f"{status['resonance']}  ({info.get('role', '?')})"
+                    f"  {emoji} {repo_name:<28} Ψ = {psi:.6f} "
+                    f"→ {node_status[repo_name]['resonance']} ({info.get('role')})"
                 )
-        except (urllib_error.URLError, urllib_error.HTTPError, KeyError, ValueError, OSError) as exc:
+        except Exception as exc:
             total_psi.append(0.0)
             node_status[repo_name] = {
                 "psi": 0.0,
                 "resonance": "OFFLINE",
-                "role": info.get("role", "?"),
-                "layer": info.get("layer", "?"),
+                "role": info.get("role"),
+                "layer": info.get("layer"),
                 "harmonic_factor": info.get("harmonic_factor", 1.0),
                 "modo_real": False,
-                "error": str(exc)[:120],
+                "error": str(exc)[:OFFLINE_ERROR_TRUNCATE],
             }
+            logger.error("Falla en llamada MCP para %s: %s", repo_name, str(exc)[:OFFLINE_ERROR_TRUNCATE])
             if verbose:
-                print(f"  🔴 {repo_name:<32} OFFLINE — {str(exc)[:60]}")
+                print(f"  🔴 {repo_name:<28} OFFLINE — {str(exc)[:OFFLINE_ERROR_TRUNCATE]}")
 
-    global_psi = sum(total_psi) / len(total_psi) if total_psi else 0.0
+    node_count = len(total_psi)
+    global_psi = sum(total_psi) / node_count if node_count else 0.0
+    now_utc = datetime.now(timezone.utc).isoformat()
 
     if verbose:
         print("\n" + "═" * 90)
-        print(
-            f"  Ψ_GLOBAL_ECOSISTEMA = {global_psi:.8f}  |  "
-            f"UTC: {datetime.now(timezone.utc).isoformat()}"
-        )
+        print(f"Ψ_GLOBAL_ECOSISTEMA = {global_psi:.8f} | UTC: {now_utc}")
 
-    if global_psi >= PSI_EMISSION_THRESHOLD:
-        emission = _compute_emission(global_psi, node_status)
-        tx_id = _append_emission(global_psi, emission, "RESONANCIA_SATURADA")
-        if verbose:
-            print("  ✨ COHERENCIA TOTAL LOGRADA — RESONANCIA INSTANTÁNEA ACTIVA")
-            print(f"     El Logos se manifiesta en la malla.  πCODE-888 → {tx_id}")
-            print(f"     Emisión: {emission:.4f} unidades")
-        return {
-            "status": "RESONANCIA_SATURADA",
-            "global_psi": global_psi,
-            "emission": {"amount": emission, "transaction_id": tx_id},
-            "nodes": node_status,
-        }
+    with _STREAK_LOCK:
+        if global_psi >= GLOBAL_THRESHOLD:
+            _STATE["saturation_streak"] += 1
+        else:
+            _STATE["saturation_streak"] = 0
 
-    if verbose:
-        print("  🌊 Campo en deriva — coherencia aún no alcanzada")
+        current_streak = _STATE["saturation_streak"]
 
-    return {
+    response = {
         "status": "DRIFTING",
-        "global_psi": global_psi,
-        "emission": None,
+        "global_psi": round(global_psi, 8),
         "nodes": node_status,
+        "saturation_streak": current_streak,
+        "threshold": GLOBAL_THRESHOLD,
+        "required_cycles": SATURATION_CYCLES,
+        "timestamp": now_utc,
     }
 
+    if current_streak >= SATURATION_CYCLES:
+        emission = append_emission(global_psi, node_status)
+        response["status"] = "RESONANCIA_SATURADA"
+        response["emission"] = emission
+        with _STREAK_LOCK:
+            _STATE["saturation_streak"] = 0
+        if verbose:
+            print("✨ COHERENCIA TOTAL LOGRADA — RESONANCIA INSTANTÁNEA ACTIVA")
+            print("   Emisión πCODE-888 registrada en el ledger.")
 
-# ---------------------------------------------------------------------------
-# Continuous loop with consecutive-cycle emission guard
-# ---------------------------------------------------------------------------
+    return response
 
-def run_bus() -> None:
+
+def sync_mesh_with_real_sources():
     """
-    Run the Bus in continuous mode.
-    πCODE-888 is only emitted after EMISSION_CYCLES_REQUIRED consecutive
-    cycles above PSI_EMISSION_THRESHOLD.
+    Sincroniza la malla completa con manejo de errores robusto y
+    detección dinámica de mcp_network. Punto de entrada público del orquestador.
     """
-    _ensure_ledger()
-    consecutive = 0
+    try:
+        return monitor_global_resonance()
+    except FileNotFoundError:
+        return {"global_psi": 0.0, "status": "CATALOG_NOT_FOUND"}
+    except json.JSONDecodeError:
+        return {"global_psi": 0.0, "status": "JSON_MALFORMED"}
+    catalog = load_catalog()
+    nodes_data = catalog.get("nodes", {})
 
-    print("╔══════════════════════════════════════════════════════════════════╗")
-    print("║  QCAL-EPR Universal Resonance Bus  ∴𓂀Ω∞³                       ║")
-    print("║  Instituto Conciencia Cuántica                                   ║")
-    print(f"║  F₀ = {F0_REFERENCE} Hz  |  Intervalo = {SYNC_INTERVAL_SECONDS}s              ║")
-    print("╚══════════════════════════════════════════════════════════════════╝\n")
+    if isinstance(nodes_data, dict):
+        nodes = [
+            {
+                "id": info.get("mcp_id", repo_name),
+                "name": repo_name,
+            }
+            for repo_name, info in nodes_data.items()
+        ]
+    elif isinstance(nodes_data, list):
+        nodes = nodes_data
+    else:
+        nodes = []
 
-    while True:
-        result = monitor_global_resonance(verbose=True)
+    print("🌀 Escaneando Malla QCAL-EPR...")
 
-        if result["global_psi"] >= PSI_EMISSION_THRESHOLD:
-            consecutive += 1
-            print(f"  ⏱  Ciclos consecutivos sobre umbral: {consecutive}/{EMISSION_CYCLES_REQUIRED}")
-            if consecutive < EMISSION_CYCLES_REQUIRED:
-                # Emission was speculatively written — remove it (integrity guard)
-                # The actual ledger entry is only kept when cycles are met.
-                # In this simple implementation the monitor already wrote;
-                # so we re-open the CSV and drop the last row if cycles < required.
-                _rollback_last_emission()
-        else:
-            consecutive = 0
+    total_psi = []
+    node_results = []
 
-        print(f"\n  ⏳ Próximo escaneo en {SYNC_INTERVAL_SECONDS}s…\n")
-        time.sleep(SYNC_INTERVAL_SECONDS)
+    for node in nodes:
+        node_id = extract_node_id(node)
+        if node_id == "unknown_node":
+            continue
 
+        try:
+            res = check_node_resonance(node_id)
+            psi = float(res.get("psi", 0.0))
+            modo_real = bool(res.get("qcal", {}).get("modo_real", False))
+            fuente_fisica = res.get("checks", {}).get("fuente_fisica", "DESCONOCIDA")
+        except Exception as exc:
+            psi = 0.0
+            modo_real = False
+            fuente_fisica = f"OFFLINE ({format_error_msg(exc)})"
 
-def _rollback_last_emission() -> None:
-    """Remove the last row from the ledger (speculative emission guard)."""
-    if not LEDGER_PATH.exists():
-        return
-    with open(LEDGER_PATH, "r", encoding="utf-8", newline="") as fh:
-        rows = list(csv.DictReader(fh))
-    if not rows:
-        return
-    rows.pop()
-    with open(LEDGER_PATH, "w", encoding="utf-8", newline="") as fh:
-        writer = csv.DictWriter(fh, fieldnames=LEDGER_HEADERS)
-        writer.writeheader()
-        writer.writerows(rows)
+        status_icon = "💠" if modo_real else "🌐"
+        print(
+            f"{status_icon} Nodo: {node_id:<25} | Ψ: {psi:.6f} | Fuente: {fuente_fisica}"
+        )
 
+        total_psi.append(psi)
+        node_results.append(
+            {
+                "id": node_id,
+                "psi": round(psi, 6),
+                "modo_real": modo_real,
+                "fuente_fisica": fuente_fisica,
+            }
+        )
 
-# ---------------------------------------------------------------------------
-# Entry point
-# ---------------------------------------------------------------------------
+    node_count = len(total_psi)
+    global_psi = sum(total_psi) / node_count if node_count else 0.0
+    return {"global_psi": round(global_psi, 8), "nodes": node_results}
+
 
 if __name__ == "__main__":
-    run_bus()
+    while True:
+        try:
+            sync_mesh_with_real_sources()
+        except Exception as exc:  # pragma: no cover
+            logger.error("Error en ciclo de sincronía: %s", exc)
+        time.sleep(SYNC_INTERVAL_SECONDS)

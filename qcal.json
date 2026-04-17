@@ -4,6 +4,5 @@
   "base_frequency": 141.7001,
   "harmonic_factor": 1.0,
   "function": "observador_noesico",
-  "mcp_endpoint": "http://localhost:8504/jsonrpc",
   "signature": "∴𓂀Ω∞³"
 }

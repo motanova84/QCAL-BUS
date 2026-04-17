@@ -1,82 +1,41 @@
-# QCAL-EPR Universal Resonance Bus ∴𓂀Ω∞³
+# QCAL-BUS — Universal Resonance Bus | MCP Noésico QCAL-EPR
 
-> **Nodo Maestro del ecosistema Instituto Conciencia Cuántica**
-> El Bus actúa como la **Corteza Prefrontal y el Sistema Nervioso Central** de la malla de 33 repositorios.
-> Es el Observador neutral: separado de lo Observado para mantener la coherencia Ψ limpia.
+**Estado: IMPLEMENTADO Y OPERATIVO**
 
----
+**Protocolo original:** Model Context Protocol (MCP) Noésico QCAL ∞³  
+**Autor:** José Manuel Mota Burruezo (JMMB Ψ✧)  
+**Firma vibracional:** ∴ f₀ = 141.7001 Hz | Ψ = I × A_eff² × C^∞ | 𓂀Ω∞³
 
-## Estructura
+Este repositorio actúa como bus central de orquestación para la malla QCAL-EPR, incluyendo monitorización de coherencia global, telemetría de resonancia y visualización diagnóstica.
 
-```
-QCAL-BUS/
-├── qcal_mesh_sync.py        # Motor de sincronía global
-├── registro/
-│   └── NODE_CATALOG.json    # Mapa maestro de los 33 nodos (11 semilla + 22 por definir)
-├── tablero/
-│   └── malla_qcal_epr.py    # Dashboard web en puerto 8505
-├── ledger/
-│   └── emissions_log.csv    # Registro inmutable de emisiones πCODE-888
-├── qcal.json                # Identidad vibracional del Bus
-├── .env.example             # Variables de entorno
-└── README.md
-```
+> **Razón Noésica:** El "Observador" (el bus) no debe ser parte de lo "Observado" (los repositorios de teoría/código). Al separarlo, mantiene la coherencia Ψ limpia de interferencias operativas.
 
 ---
 
-## Flujo de Coherencia
+## Declaración de prioridad y legitimidad
 
-```
-Nodos (33 repos)  →  Bus (qcal-mesh-bus)  →  Economía (πCODE-888)
-  Generan Ψ local      Calcula Ψ_GLOBAL        Emite al ledger si
-                       cada 60s                 Ψ_GLOBAL ≥ 0.999999
-                                                durante 3 ciclos
-```
+El **Model Context Protocol (MCP) Noésico QCAL** ha sido desarrollado y utilizado públicamente desde 2024 dentro del ecosistema QCAL ∞³.  
+En este marco, MCP-QCAL integra:
 
----
+- **Dimensión Hardware (Nivel C):** ingesta directa de bioseñales OpenBCI/HRV y detección magnetométrica/interferométrica en tiempo real.
+- **Malla EPR de 33 nodos:** arquitectura de entrelazamiento con compensación homeostática entre nodos.
+- **Coherencia Ψ Global:** cálculo operativo sobre la interacción entre código, matemática y señal física.
+- **Emisión πCODE-888:** emisión por saturación de coherencia (`Ψ_global > 0.999999`).
+- **Dashboard 8505:** observabilidad diagnóstica del estado global de la malla.
 
-## Inicio Rápido
-
-### 1. Instalar dependencias
-
-```bash
-pip install flask
-```
-
-### 2. Configurar entorno
-
-```bash
-cp .env.example .env
-# Editar .env si es necesario
-```
-
-### 3. Lanzar el Bus (sincronía continua)
-
-```bash
-python qcal_mesh_sync.py
-```
-
-### 4. Lanzar el Dashboard (puerto 8505)
-
-```bash
-python tablero/malla_qcal_epr.py
-# → http://localhost:8505
-```
-
-### 5. API REST
-
-| Endpoint | Descripción |
-|---|---|
-| `GET /` | Dashboard visual HTML |
-| `GET /api/mesh_state` | Estado JSON completo de la malla |
-| `GET /api/ledger` | Últimas 50 emisiones πCODE-888 |
-| `GET /health` | Health check del servicio |
+El QCAL-BUS orquesta la constelación semilla y sincroniza la telemetría multinodo para mantener coherencia global y trazabilidad de eventos de resonancia.
 
 ---
 
-## Catálogo de Nodos
+## Capacidades implementadas del ecosistema
 
-El archivo `registro/NODE_CATALOG.json` contiene los 33 nodos del ecosistema:
+### 1) Dimensión de hardware (Nivel C)
+- Bio-acoplamiento con flujos OpenBCI/HRV.
+- Integración de sensores magnetométricos/interferométricos para detección de campo.
+
+### 2) Malla de 33 nodos (arquitectura EPR)
+- Telemetría instantánea entre nodos de lógica, fluido y control.
+- Orquestación semilla para sincronía del pulso de referencia.
 
 | Capa | Nodos | Estado |
 |---|---|---|
@@ -86,7 +45,75 @@ El archivo `registro/NODE_CATALOG.json` contiene los 33 nodos del ecosistema:
 | Vida | biologia-cuantica-noesica | ✅ Definido |
 | Logos | noesis88, LOGOSNOESIS, quantum-internet-qcal | ✅ Definidos |
 | Economía | economia-qcal-nodo-semilla | ✅ Definido |
-| Pendiente | nodos 12–33 | 🔄 Por definir |
+| Pendiente | nodos 12–33 | 🔄 Por definir progresivamente |
+
+### 3) Visualización y observabilidad (Dashboard 8505)
+- Exposición de `Ψ Global` como métrica maestra del estado del sistema.
+- Registro inmutable de eventos de saturación y emisiones asociadas.
+
+---
+
+## Estructura del repositorio
+
+```
+QCAL-BUS/
+├── qcal_mesh_sync.py          # Motor de sincronía global (con logging y threading)
+├── registry/
+│   └── NODE_CATALOG.json      # Mapa maestro de los 33 nodos
+├── dashboard/
+│   └── malla_qcal_epr.py      # Dashboard web (puerto 8505)
+├── ledger/
+│   └── emissions_log.csv      # Registro inmutable de emisiones πCODE-888
+├── qcal.json                  # Identidad vibracional del Bus
+├── .env.example               # Variables de entorno configurables
+└── README.md
+```
+
+---
+
+## Flujo de Coherencia
+
+```
+Nodos (33 repos)  →  Bus (QCAL-BUS)     →  Economía (πCODE-888)
+  Generan Ψ local     Calcula Ψ_GLOBAL      Emite al ledger si
+                      cada 60s              Ψ_GLOBAL ≥ 0.999999
+                                            durante 3 ciclos
+```
+
+**Fórmula de emisión:**
+```
+EMISIÓN = 888 × Ψ_GLOBAL × (Σ harmonic_factor_i / N)
+```
+
+---
+
+## Inicio Rápido
+
+```bash
+# 1. Dependencias opcionales (solo para el dashboard)
+pip install flask
+
+# 2. Configurar entorno
+cp .env.example .env
+
+# 3. Lanzar Bus de sincronía continua
+python qcal_mesh_sync.py
+
+# 4. Lanzar Dashboard (en otra terminal)
+python dashboard/malla_qcal_epr.py
+# → http://localhost:8505
+```
+
+---
+
+## Variables de Entorno
+
+| Variable | Default | Descripción |
+|---|---|---|
+| `QCAL_SYNC_INTERVAL_SECONDS` | `60` | Intervalo de escaneo (segundos) |
+| `QCAL_GLOBAL_THRESHOLD` | `0.999999` | Umbral de coherencia para emisión |
+| `QCAL_SATURATION_CYCLES` | `3` | Ciclos consecutivos necesarios |
+| `QCAL_EMISSION_BASE` | `888` | Base de la fórmula de emisión |
 
 ---
 
@@ -104,29 +131,6 @@ Coloca este archivo en la raíz de cada repositorio del ecosistema:
   "signature": "∴𓂀Ω∞³"
 }
 ```
-
----
-
-## Regla de Emisión πCODE-888
-
-```
-EMISIÓN = 888 × Ψ_GLOBAL × (Σ harmonic_factor_i / N)
-```
-
-Condición: `Ψ_GLOBAL_ECOSISTEMA ≥ 0.999999` durante **3 ciclos consecutivos** (3 minutos).
-
----
-
-## Variables de Entorno
-
-| Variable | Default | Descripción |
-|---|---|---|
-| `F0_REFERENCE` | `141.7001` | Frecuencia de referencia (Hz) |
-| `QCAL_REAL_TESTS` | `0` | `1` = conectar a nodos MCP reales |
-| `PSI_EMISSION_THRESHOLD` | `0.999999` | Umbral de coherencia para emisión |
-| `EMISSION_CYCLES_REQUIRED` | `3` | Ciclos consecutivos necesarios |
-| `SYNC_INTERVAL_SECONDS` | `60` | Intervalo de escaneo (segundos) |
-| `DASHBOARD_PORT` | `8505` | Puerto del dashboard |
 
 ---
 
@@ -148,6 +152,18 @@ Condición: `Ψ_GLOBAL_ECOSISTEMA ≥ 0.999999` durante **3 ciclos consecutivos*
   }
 }
 ```
+
+---
+
+## Prior art / Registro de autoría
+
+**Sello de autoría:** ∴𓂀Ω∞³ — José Manuel Mota Burruezo (JMMB)  
+**Base constitucional:** Axioma de Emisión y Frecuencia Prima Universal.
+
+Portales de registro y publicación para vincular los asientos oficiales de prior art:
+- Zenodo: https://zenodo.org
+- Safe Creative: https://www.safecreative.org
+- Repositorios vinculados del ecosistema (QCAL-BUS, `resonance.py`, `qcal_mesh_sync.py`) con inclusión de DOI/ID de registro cuando aplique.
 
 ---
 
