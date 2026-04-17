@@ -41,6 +41,17 @@ def ensure_ledger():
         )
 
 
+def extract_node_id(node):
+    """Extrae el identificador canónico con jerarquía de prioridad."""
+    return node.get("id") or node.get("mcp_id") or node.get("node_id") or node.get("name") or "unknown_node"
+
+
+def format_error_msg(error, length=50):
+    """Truncado inteligente de errores para diagnósticos limpios."""
+    msg = str(error)
+    return (msg[:length] + "...") if len(msg) > length else msg
+
+
 def check_node_resonance(mcp_id):
     if qcal is None:
         raise RuntimeError("mcp_network.resonance no está disponible")
@@ -123,7 +134,8 @@ def monitor_global_resonance(verbose=True):
             if verbose:
                 print(f"  🔴 {repo_name:<28} OFFLINE — {str(exc)[:OFFLINE_ERROR_TRUNCATE]}")
 
-    global_psi = sum(total_psi) / len(total_psi) if total_psi else 0.0
+    node_count = len(total_psi)
+    global_psi = sum(total_psi) / node_count if node_count else 0.0
     now_utc = datetime.now(timezone.utc).isoformat()
 
     if verbose:
@@ -159,6 +171,63 @@ def monitor_global_resonance(verbose=True):
             print("   Emisión πCODE-888 registrada en el ledger.")
 
     return response
+
+
+def sync_mesh_with_real_sources():
+    catalog = load_catalog()
+    nodes_data = catalog.get("nodes", {})
+
+    if isinstance(nodes_data, dict):
+        nodes = [
+            {
+                "id": info.get("mcp_id", repo_name),
+                "name": repo_name,
+            }
+            for repo_name, info in nodes_data.items()
+        ]
+    elif isinstance(nodes_data, list):
+        nodes = nodes_data
+    else:
+        nodes = []
+
+    print("🌀 Escaneando Malla QCAL-EPR...")
+
+    total_psi = []
+    node_results = []
+
+    for node in nodes:
+        node_id = extract_node_id(node)
+        if node_id == "unknown_node":
+            continue
+
+        try:
+            res = check_node_resonance(node_id)
+            psi = float(res.get("psi", 0.0))
+            modo_real = bool(res.get("qcal", {}).get("modo_real", False))
+            fuente_fisica = res.get("checks", {}).get("fuente_fisica", "DESCONOCIDA")
+        except Exception as exc:
+            psi = 0.0
+            modo_real = False
+            fuente_fisica = f"OFFLINE ({format_error_msg(exc)})"
+
+        status_icon = "💠" if modo_real else "🌐"
+        print(
+            f"{status_icon} Nodo: {node_id:<25} | Ψ: {psi:.6f} | Fuente: {fuente_fisica}"
+        )
+
+        total_psi.append(psi)
+        node_results.append(
+            {
+                "id": node_id,
+                "psi": round(psi, 6),
+                "modo_real": modo_real,
+                "fuente_fisica": fuente_fisica,
+            }
+        )
+
+    node_count = len(total_psi)
+    global_psi = sum(total_psi) / node_count if node_count else 0.0
+    return {"global_psi": round(global_psi, 8), "nodes": node_results}
 
 
 if __name__ == "__main__":
