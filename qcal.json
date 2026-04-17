@@ -1,0 +1,8 @@
+{
+  "node_name": "qcal-mesh-bus",
+  "role": "orquestador",
+  "base_frequency": 141.7001,
+  "harmonic_factor": 1.0,
+  "function": "observador_noesico",
+  "signature": "∴𓂀Ω∞³"
+}
