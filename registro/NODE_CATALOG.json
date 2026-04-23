@@ -1,0 +1,275 @@
+{
+  "meta": {
+    "name": "QCAL-EPR Universal Resonance Bus",
+    "version": "1.0.0",
+    "f0_reference_hz": 141.7001,
+    "total_nodes": 33,
+    "last_sync": "2026-04-17T03:52:00Z"
+  },
+  "nodes": {
+    "riemann-adelic": {
+      "mcp_id": "riemann-mcp-server",
+      "role": "núcleo",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "núcleo",
+      "mcp_endpoint": "http://localhost:8506/jsonrpc"
+    },
+    "141-hz": {
+      "mcp_id": "141-hz",
+      "role": "núcleo",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "núcleo",
+      "mcp_endpoint": "http://localhost:8507/jsonrpc"
+    },
+    "3d-navier-stokes": {
+      "mcp_id": "navier-mcp-server",
+      "role": "cuerpo",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "cuerpo",
+      "mcp_endpoint": "http://localhost:8508/jsonrpc"
+    },
+    "p-np-qcal": {
+      "mcp_id": "p-np-mcp-server",
+      "role": "cuerpo",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "cuerpo",
+      "mcp_endpoint": "http://localhost:8509/jsonrpc"
+    },
+    "ramsey-qcal": {
+      "mcp_id": "ramsey-qcal",
+      "role": "mente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "mente",
+      "mcp_endpoint": "http://localhost:8510/jsonrpc"
+    },
+    "adelic-bsd": {
+      "mcp_id": "bsd-mcp-server",
+      "role": "mente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "mente",
+      "mcp_endpoint": "http://localhost:8511/jsonrpc"
+    },
+    "biologia-cuantica-noesica": {
+      "mcp_id": "biologia-cuantica-noesica",
+      "role": "vida",
+      "base_frequency": 70.85005,
+      "harmonic_factor": 0.5,
+      "layer": "vida",
+      "mcp_endpoint": "http://localhost:8512/jsonrpc"
+    },
+    "noesis88": {
+      "mcp_id": "noesis88",
+      "role": "logos",
+      "base_frequency": 888.0,
+      "harmonic_factor": 6.266,
+      "layer": "logos",
+      "mcp_endpoint": "http://localhost:8513/jsonrpc"
+    },
+    "LOGOSNOESIS": {
+      "mcp_id": "LOGOSNOESIS",
+      "role": "logos",
+      "base_frequency": 888.0,
+      "harmonic_factor": 6.266,
+      "layer": "logos",
+      "mcp_endpoint": "http://localhost:8514/jsonrpc"
+    },
+    "economia-qcal-nodo-semilla": {
+      "mcp_id": "nodo-semilla-v1",
+      "role": "economía",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "economía",
+      "mcp_endpoint": "http://localhost:8515/jsonrpc"
+    },
+    "quantum-internet-qcal": {
+      "mcp_id": "quantum-internet-qcal",
+      "role": "logos",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "logos",
+      "mcp_endpoint": "http://localhost:8516/jsonrpc"
+    },
+    "nodo-placeholder-12": {
+      "mcp_id": "placeholder-12",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8517/jsonrpc"
+    },
+    "nodo-placeholder-13": {
+      "mcp_id": "placeholder-13",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8518/jsonrpc"
+    },
+    "nodo-placeholder-14": {
+      "mcp_id": "placeholder-14",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8519/jsonrpc"
+    },
+    "nodo-placeholder-15": {
+      "mcp_id": "placeholder-15",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8520/jsonrpc"
+    },
+    "nodo-placeholder-16": {
+      "mcp_id": "placeholder-16",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8521/jsonrpc"
+    },
+    "nodo-placeholder-17": {
+      "mcp_id": "placeholder-17",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8522/jsonrpc"
+    },
+    "nodo-placeholder-18": {
+      "mcp_id": "placeholder-18",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8523/jsonrpc"
+    },
+    "nodo-placeholder-19": {
+      "mcp_id": "placeholder-19",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8524/jsonrpc"
+    },
+    "nodo-placeholder-20": {
+      "mcp_id": "placeholder-20",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8525/jsonrpc"
+    },
+    "nodo-placeholder-21": {
+      "mcp_id": "placeholder-21",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8526/jsonrpc"
+    },
+    "nodo-placeholder-22": {
+      "mcp_id": "placeholder-22",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8527/jsonrpc"
+    },
+    "nodo-placeholder-23": {
+      "mcp_id": "placeholder-23",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8528/jsonrpc"
+    },
+    "nodo-placeholder-24": {
+      "mcp_id": "placeholder-24",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8529/jsonrpc"
+    },
+    "nodo-placeholder-25": {
+      "mcp_id": "placeholder-25",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8530/jsonrpc"
+    },
+    "nodo-placeholder-26": {
+      "mcp_id": "placeholder-26",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8531/jsonrpc"
+    },
+    "nodo-placeholder-27": {
+      "mcp_id": "placeholder-27",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8532/jsonrpc"
+    },
+    "nodo-placeholder-28": {
+      "mcp_id": "placeholder-28",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8533/jsonrpc"
+    },
+    "nodo-placeholder-29": {
+      "mcp_id": "placeholder-29",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8534/jsonrpc"
+    },
+    "nodo-placeholder-30": {
+      "mcp_id": "placeholder-30",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8535/jsonrpc"
+    },
+    "nodo-placeholder-31": {
+      "mcp_id": "placeholder-31",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8536/jsonrpc"
+    },
+    "nodo-placeholder-32": {
+      "mcp_id": "placeholder-32",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8537/jsonrpc"
+    },
+    "nodo-placeholder-33": {
+      "mcp_id": "placeholder-33",
+      "role": "pendiente",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "pendiente",
+      "mcp_endpoint": "http://localhost:8538/jsonrpc"
+    }
+  }
+}

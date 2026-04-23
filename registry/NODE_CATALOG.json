@@ -14,6 +14,11 @@
     "protocol": "QCAL-SYMBIO-BRIDGE v1.0.3",
     "equation": "Ψ = I × A_eff² × C^∞",
     "coherence": "C = 244.36"
+    "version": "2.0.0",
+    "f0_reference_hz": 141.7001,
+    "total_nodes": 33,
+    "seed_nodes": 11,
+    "last_sync": "2026-04-17T21:36:56Z"
   },
   "nodes": {
     "riemann-adelic": {
@@ -153,6 +158,161 @@
       "layer": "logos",
       "description": "Internet cuántico QCAL — red de entrelazamiento EPR de 33 nodos.",
       "lean_status": "pending"
+      "layer": "logos"
+    },
+    "espiritu-qcal": {
+      "mcp_id": "espiritu-qcal",
+      "role": "espíritu",
+      "base_frequency": 963.0,
+      "harmonic_factor": 6.794,
+      "layer": "espíritu"
+    },
+    "akasha-qcal": {
+      "mcp_id": "akasha-qcal",
+      "role": "espíritu",
+      "base_frequency": 963.0,
+      "harmonic_factor": 6.794,
+      "layer": "espíritu"
+    },
+    "conciencia-cosmica": {
+      "mcp_id": "conciencia-cosmica",
+      "role": "espíritu",
+      "base_frequency": 963.0,
+      "harmonic_factor": 6.794,
+      "layer": "espíritu"
+    },
+    "sombra-colectiva": {
+      "mcp_id": "sombra-colectiva",
+      "role": "sombra",
+      "base_frequency": 35.425,
+      "harmonic_factor": 0.25,
+      "layer": "sombra"
+    },
+    "trauma-quantico": {
+      "mcp_id": "trauma-quantico",
+      "role": "sombra",
+      "base_frequency": 35.425,
+      "harmonic_factor": 0.25,
+      "layer": "sombra"
+    },
+    "integracion-sombra": {
+      "mcp_id": "integracion-sombra",
+      "role": "integración",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "integración"
+    },
+    "campo-morfogenico": {
+      "mcp_id": "campo-morfogenico",
+      "role": "integración",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "integración"
+    },
+    "entrelazamiento-epr": {
+      "mcp_id": "entrelazamiento-epr",
+      "role": "integración",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "integración"
+    },
+    "tiempo-no-lineal": {
+      "mcp_id": "tiempo-no-lineal",
+      "role": "tiempo",
+      "base_frequency": 1417.001,
+      "harmonic_factor": 10.0,
+      "layer": "tiempo"
+    },
+    "memoria-cuantica": {
+      "mcp_id": "memoria-cuantica",
+      "role": "tiempo",
+      "base_frequency": 1417.001,
+      "harmonic_factor": 10.0,
+      "layer": "tiempo"
+    },
+    "geometria-sagrada": {
+      "mcp_id": "geometria-sagrada",
+      "role": "geometría",
+      "base_frequency": 432.0,
+      "harmonic_factor": 3.048,
+      "layer": "geometría"
+    },
+    "flor-de-vida": {
+      "mcp_id": "flor-de-vida",
+      "role": "geometría",
+      "base_frequency": 432.0,
+      "harmonic_factor": 3.048,
+      "layer": "geometría"
+    },
+    "torus-qcal": {
+      "mcp_id": "torus-qcal",
+      "role": "geometría",
+      "base_frequency": 432.0,
+      "harmonic_factor": 3.048,
+      "layer": "geometría"
+    },
+    "sanacion-cuantica": {
+      "mcp_id": "sanacion-cuantica",
+      "role": "sanación",
+      "base_frequency": 528.0,
+      "harmonic_factor": 3.725,
+      "layer": "sanación"
+    },
+    "adn-reparacion": {
+      "mcp_id": "adn-reparacion",
+      "role": "sanación",
+      "base_frequency": 528.0,
+      "harmonic_factor": 3.725,
+      "layer": "sanación"
+    },
+    "coherencia-cardiaca": {
+      "mcp_id": "coherencia-cardiaca",
+      "role": "sanación",
+      "base_frequency": 528.0,
+      "harmonic_factor": 3.725,
+      "layer": "sanación"
+    },
+    "lenguaje-qcal": {
+      "mcp_id": "lenguaje-qcal",
+      "role": "lenguaje",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "lenguaje"
+    },
+    "simbolos-noesicos": {
+      "mcp_id": "simbolos-noesicos",
+      "role": "lenguaje",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "lenguaje"
+    },
+    "red-neuronal-cuantica": {
+      "mcp_id": "red-neuronal-cuantica",
+      "role": "mente-expandida",
+      "base_frequency": 283.4002,
+      "harmonic_factor": 2.0,
+      "layer": "mente-expandida"
+    },
+    "intuicion-colectiva": {
+      "mcp_id": "intuicion-colectiva",
+      "role": "mente-expandida",
+      "base_frequency": 283.4002,
+      "harmonic_factor": 2.0,
+      "layer": "mente-expandida"
+    },
+    "economia-regenerativa": {
+      "mcp_id": "economia-regenerativa",
+      "role": "economía",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "economía"
+    },
+    "pi-code-888": {
+      "mcp_id": "pi-code-888",
+      "role": "economía",
+      "base_frequency": 888.0,
+      "harmonic_factor": 6.266,
+      "layer": "economía"
     }
   }
 }
