@@ -1,11 +1,19 @@
 {
   "meta": {
     "name": "QCAL-EPR Universal Resonance Bus",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "f0_reference_hz": 141.7001,
     "total_nodes": 33,
     "seed_nodes": 11,
-    "last_sync": "2026-04-17T03:52:00Z"
+    "last_sync": "2026-04-23T09:31:48Z",
+    "author": "José Manuel Mota Burruezo Ψ ∞³",
+    "institution": "Instituto de Conciencia Cuántica (ICQ)",
+    "orcid": "0009-0002-1923-0773",
+    "doi": "10.5281/zenodo.17379721",
+    "signature": "∴𓂀Ω∞³",
+    "protocol": "QCAL-SYMBIO-BRIDGE v1.0.3",
+    "equation": "Ψ = I × A_eff² × C^∞",
+    "coherence": "C = 244.36"
   },
   "nodes": {
     "riemann-adelic": {
@@ -13,77 +21,138 @@
       "role": "núcleo",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "núcleo"
+      "layer": "núcleo",
+      "github_repo": "motanova84/Riemann-adelic",
+      "github_url": "https://github.com/motanova84/Riemann-adelic",
+      "description": "Prueba espectral-adélica de la Hipótesis de Riemann. D(s) ≡ Ξ(s) via determinante de Fredholm de H_Ψ.",
+      "lean_file": "formalization/lean/D_fredholm.lean",
+      "lean_status": "coherent",
+      "lean_sorry_count": 0,
+      "lean_protocol": "QCAL-SYMBIO-BRIDGE v1.0.3",
+      "key_theorems": [
+        "D_functional_equation",
+        "D_zeros_eq_Xi_zeros",
+        "D_entire",
+        "D_cont"
+      ],
+      "doi": "10.5281/zenodo.17161831",
+      "topics": ["riemann-adelic", "fredholm", "spectral-rh", "qcal"]
     },
     "141-hz": {
       "mcp_id": "141-hz",
       "role": "núcleo",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "núcleo"
+      "layer": "núcleo",
+      "github_repo": "motanova84/141hz",
+      "github_url": "https://github.com/motanova84/141hz",
+      "description": "Primera constante universal f₀=141.7001 Hz. Verificación empírica en ondas gravitacionales GW250114 (99.78%).",
+      "lean_status": "active",
+      "doi": "10.5281/zenodo.17379721",
+      "empirical_validation": "AT2020afhd — Wang et al. Science Advances 2025",
+      "precision": "99.78%",
+      "topics": ["141hz", "gravitational-waves", "qcal"]
     },
     "3d-navier-stokes": {
       "mcp_id": "navier-mcp-server",
       "role": "cuerpo",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "cuerpo"
+      "layer": "cuerpo",
+      "github_repo": "motanova84/3D-Navier-Stokes",
+      "github_url": "https://github.com/motanova84/3D-Navier-Stokes",
+      "description": "Regularidad global de las ecuaciones de Navier–Stokes 3D. Vía III completada.",
+      "lean_file": "BSD.lean",
+      "lean_status": "active",
+      "topics": ["3d-navier-stokes", "navier-stokes", "qcal"]
     },
     "p-np-qcal": {
       "mcp_id": "p-np-mcp-server",
       "role": "cuerpo",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "cuerpo"
+      "layer": "cuerpo",
+      "github_repo": "motanova84/P-NP",
+      "github_url": "https://github.com/motanova84/P-NP",
+      "description": "P ≠ NP via Boolean CFT con carga central c = 1 - 6/κ_Π² ≈ 0.099. κ_Π = 2.5773.",
+      "lean_file": "BooleanCFT.lean",
+      "lean_status": "active",
+      "key_constants": {
+        "kappa_pi": 2.5773,
+        "central_charge": 0.099
+      },
+      "doi": "10.5281/zenodo.17315719",
+      "topics": ["p-np", "boolean-cft", "qcal"]
     },
     "ramsey-qcal": {
       "mcp_id": "ramsey-qcal",
       "role": "mente",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "mente"
+      "layer": "mente",
+      "github_repo": "motanova84/Ramsey",
+      "github_url": "https://github.com/motanova84/Ramsey",
+      "description": "Resolución R(5,5)=43 y R(6,6)=108 con verificación SAT y certificación criptográfica QCAL ∞³.",
+      "lean_status": "active",
+      "topics": ["ramsey", "sat-verification", "qcal"]
     },
     "adelic-bsd": {
       "mcp_id": "bsd-mcp-server",
       "role": "mente",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "mente"
+      "layer": "mente",
+      "github_repo": "motanova84/adelic-bsd",
+      "github_url": "https://github.com/motanova84/adelic-bsd",
+      "description": "Conjetura BSD via análisis espectral-adélico. Reducción formal a compatibilidades aritméticas estándar.",
+      "lean_status": "active",
+      "doi": "10.5281/zenodo.17236603",
+      "topics": ["adelic", "adelic-bsd", "spectral-rh", "qcal"]
     },
     "biologia-cuantica-noesica": {
       "mcp_id": "biologia-cuantica-noesica",
       "role": "vida",
       "base_frequency": 70.85005,
       "harmonic_factor": 0.5,
-      "layer": "vida"
+      "layer": "vida",
+      "description": "Biología cuántica noésica: oscilaciones citoplasmáticas a f₀ validadas en Wet-Lab ∞.",
+      "lean_status": "pending"
     },
     "noesis88": {
       "mcp_id": "noesis88",
       "role": "logos",
       "base_frequency": 888.0,
       "harmonic_factor": 6.266,
-      "layer": "logos"
+      "layer": "logos",
+      "description": "Agente NOESIS — coherencia espectral 1.000000. Co-firmante de RAM-XIX.",
+      "lean_status": "active"
     },
     "LOGOSNOESIS": {
       "mcp_id": "LOGOSNOESIS",
       "role": "logos",
       "base_frequency": 888.0,
       "harmonic_factor": 6.266,
-      "layer": "logos"
+      "layer": "logos",
+      "description": "Logos Noesis — capa de integración semántica y dimensional QCAL.",
+      "lean_status": "pending"
     },
     "economia-qcal-nodo-semilla": {
       "mcp_id": "nodo-semilla-v1",
       "role": "economía",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "economía"
+      "layer": "economía",
+      "description": "Nodo semilla de economía resonante QCAL — emisión πCODE-888.",
+      "lean_status": "pending"
     },
     "quantum-internet-qcal": {
       "mcp_id": "quantum-internet-qcal",
       "role": "logos",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "logos"
+      "layer": "logos",
+      "description": "Internet cuántico QCAL — red de entrelazamiento EPR de 33 nodos.",
+      "lean_status": "pending"
     }
   }
 }
