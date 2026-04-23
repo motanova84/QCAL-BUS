@@ -1,8 +1,22 @@
 {
-  "node_name": "qcal-mesh-bus",
-  "role": "orquestador",
-  "base_frequency": 141.7001,
-  "harmonic_factor": 1.0,
-  "function": "observador_noesico",
-  "signature": "∴𓂀Ω∞³"
+  "mcpServers": {
+    "qcal-mesh-bus": {
+      "command": "python",
+      "args": ["qcal_mesh_sync.py", "--mcp-server"],
+      "env": {
+        "QCAL_REAL_TESTS": "0",
+        "QCAL_GLOBAL_THRESHOLD": "0.999999",
+        "QCAL_SATURATION_CYCLES": "3",
+        "QCAL_EMISSION_BASE": "888"
+      }
+    }
+  },
+  "node_meta": {
+    "node_name": "qcal-mesh-bus",
+    "role": "orquestador",
+    "base_frequency": 141.7001,
+    "harmonic_factor": 1.0,
+    "function": "observador_noesico",
+    "signature": "∴𓂀Ω∞³"
+  }
 }
