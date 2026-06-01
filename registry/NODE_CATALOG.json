@@ -13,7 +13,7 @@
     "signature": "∴𓂀Ω∞³",
     "protocol": "QCAL-SYMBIO-BRIDGE v1.0.3",
     "equation": "Ψ = I × A_eff² × C^∞",
-    "coherence": "C = 244.36"
+    "coherence": "C = 244.36",
     "version": "2.0.0",
     "f0_reference_hz": 141.7001,
     "total_nodes": 33,
@@ -157,7 +157,7 @@
       "harmonic_factor": 1.0,
       "layer": "logos",
       "description": "Internet cuántico QCAL — red de entrelazamiento EPR de 33 nodos.",
-      "lean_status": "pending"
+      "lean_status": "pending",
       "layer": "logos"
     },
     "espiritu-qcal": {

@@ -84,7 +84,6 @@ def ensure_ledger() -> None:
         )
 
 
-def check_node_resonance(mcp_id: str) -> dict:
 def extract_node_id(node):
     """Extrae el identificador canónico con jerarquía de prioridad."""
     return node.get("id") or node.get("mcp_id") or node.get("node_id") or node.get("name") or "unknown_node"
@@ -289,7 +288,7 @@ def _mcp_call_tool(name: str, arguments: dict) -> dict:
     return {"isError": True, "content": [{"type": "text", "text": f"Herramienta desconocida: {name!r}"}]}
 
 
-def _mcp_handle(request: dict) -> dict | None:
+def _mcp_handle(request: dict):
     """Procesa una solicitud JSON-RPC 2.0 y retorna la respuesta (o None para notificaciones)."""
     if not isinstance(request, dict):
         return {"jsonrpc": "2.0", "id": None, "error": {"code": -32600, "message": "Solicitud inválida"}}
