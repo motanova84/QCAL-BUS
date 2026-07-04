@@ -59,9 +59,7 @@ OFFLINE_ERROR_TRUNCATE = 120
 # ---------------------------------------------------------------------------
 
 def load_catalog() -> dict:
-    with CATALOG_PATH.open("r", encoding="utf-8") as file:
-        return json.load(file)
-def load_catalog():
+    """Carga y valida el catálogo de nodos QCAL desde el registro canónico."""
     if not CATALOG_PATH.exists():
         logger.error("Fisura detectada: No se encuentra el catálogo en %s", CATALOG_PATH)
         raise FileNotFoundError(f"Catálogo no encontrado: {CATALOG_PATH}")
@@ -381,40 +379,24 @@ def _build_arg_parser() -> argparse.ArgumentParser:
 
 
 # ---------------------------------------------------------------------------
-# Entry point
+# Public orchestrator entry point
 # ---------------------------------------------------------------------------
 
-if __name__ == "__main__":
-    args = _build_arg_parser().parse_args()
-
-    if args.csv:
-        LEDGER_PATH = Path(args.csv).resolve()
-
-    if args.interval is not None:
-        SYNC_INTERVAL_SECONDS = args.interval
-
-    if args.mcp_server:
-        run_mcp_server()
-    else:
-        # --loop or no flag → continuous monitoring loop
-        while True:
-            try:
-                monitor_global_resonance()
-            except Exception as exc:  # pragma: no cover
-                print(f"⚠️ Error en ciclo de sincronía: {exc}")
-            time.sleep(SYNC_INTERVAL_SECONDS)
 def sync_mesh_with_real_sources():
     """
     Sincroniza la malla completa con manejo de errores robusto y
     detección dinámica de mcp_network. Punto de entrada público del orquestador.
     """
+    logger.info("Iniciando sincronización de malla con fuentes reales...")
     try:
-        return monitor_global_resonance()
+        catalog = load_catalog()
     except FileNotFoundError:
+        logger.error("Catálogo no encontrado. Retornando estado vacío.")
         return {"global_psi": 0.0, "status": "CATALOG_NOT_FOUND"}
     except json.JSONDecodeError:
+        logger.error("JSON mal formado en el catálogo. Retornando estado vacío.")
         return {"global_psi": 0.0, "status": "JSON_MALFORMED"}
-    catalog = load_catalog()
+
     nodes_data = catalog.get("nodes", {})
 
     if isinstance(nodes_data, dict):
@@ -467,13 +449,31 @@ def sync_mesh_with_real_sources():
 
     node_count = len(total_psi)
     global_psi = sum(total_psi) / node_count if node_count else 0.0
+    logger.info("Sincronización completa. Ψ_GLOBAL = %.8f", global_psi)
     return {"global_psi": round(global_psi, 8), "nodes": node_results}
 
 
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
+
 if __name__ == "__main__":
-    while True:
-        try:
-            sync_mesh_with_real_sources()
-        except Exception as exc:  # pragma: no cover
-            logger.error("Error en ciclo de sincronía: %s", exc)
-        time.sleep(SYNC_INTERVAL_SECONDS)
+    logger.info("QCAL-BUS iniciando — 141.7001 Hz")
+    args = _build_arg_parser().parse_args()
+
+    if args.csv:
+        LEDGER_PATH = Path(args.csv).resolve()
+
+    if args.interval is not None:
+        SYNC_INTERVAL_SECONDS = args.interval
+
+    if args.mcp_server:
+        run_mcp_server()
+    else:
+        # --loop or no flag → continuous monitoring loop
+        while True:
+            try:
+                monitor_global_resonance()
+            except Exception as exc:  # pragma: no cover
+                print(f"⚠️ Error en ciclo de sincronía: {exc}")
+            time.sleep(SYNC_INTERVAL_SECONDS)
