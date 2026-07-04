@@ -10,6 +10,7 @@ if str(ROOT_DIR) not in sys.path:
 
 from qcal_mesh_sync import monitor_global_resonance, load_catalog, read_emissions_log  # noqa: E402
 from qcal_mesh_sync import sync_mesh_with_real_sources  # noqa: E402
+import mcp_network.resonance as resonance  # noqa: E402
 
 app = Flask(__name__)
 
@@ -44,10 +45,14 @@ HTML_TEMPLATE = """
     table { border-collapse: collapse; width: 100%; font-size: 0.8rem; }
     th, td { border: 1px solid #30363d; padding: 4px 8px; text-align: left; }
     th { background: #161b22; }
+    .debug-info { font-size: 0.75rem; color: #8b949e; margin-top: 0.5rem; }
+    .error-banner { background: #f85149; color: white; padding: 0.5rem; border-radius: 4px; margin-bottom: 1rem; display: none; }
   </style>
 </head>
 <body>
   <h1>🌀 Instituto Conciencia Cuántica — Malla QCAL-EPR</h1>
+
+  <div id="error-banner" class="error-banner"></div>
 
   <div class="card" id="global-card">
     <strong>Ψ_GLOBAL_ECOSISTEMA</strong>
@@ -57,6 +62,11 @@ HTML_TEMPLATE = """
       Racha: <strong id="global-streak">—</strong> ciclos &nbsp;|&nbsp;
       Umbral: <span id="global-threshold">—</span> &nbsp;|&nbsp;
       UTC: <span id="global-ts">—</span>
+    </div>
+    <div class="debug-info">
+      Modo: <span id="debug-mode">—</span> &nbsp;|&nbsp;
+      Entorno: <span id="debug-env">—</span> &nbsp;|&nbsp;
+      Última actualización: <span id="last-update">—</span>
     </div>
   </div>
 
@@ -89,16 +99,41 @@ HTML_TEMPLATE = """
       return '🔴';
     }
 
+    function showError(msg) {
+      const banner = document.getElementById('error-banner');
+      banner.textContent = '❌ Error: ' + msg;
+      banner.style.display = 'block';
+      setTimeout(() => { banner.style.display = 'none'; }, 5000);
+    }
+
+    function updateDebugInfo() {
+      const now = new Date().toLocaleTimeString('es-ES');
+      document.getElementById('last-update').textContent = now;
+    }
+
     async function loadState() {
       try {
-        const r = await fetch('/api/mesh_state');
-        const d = await r.json();
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+
+        const response = await fetch('/api/mesh_state', { signal: controller.signal });
+        clearTimeout(timeout);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const d = await response.json();
 
         document.getElementById('global-psi').textContent = d.global_psi.toFixed(8);
         document.getElementById('global-status').textContent = d.status;
         document.getElementById('global-streak').textContent = d.saturation_streak;
         document.getElementById('global-threshold').textContent = d.threshold;
         document.getElementById('global-ts').textContent = d.timestamp;
+
+        // Debug info
+        document.getElementById('debug-mode').textContent = d.qcal?.modo_real ? 'REAL' : 'SIMULADO';
+        document.getElementById('debug-env').textContent = d.qcal?.dev_mode === false ? 'PRODUCCIÓN' : 'DESARROLLO';
 
         const pct = Math.min(100, d.global_psi * 100);
         const bar = document.getElementById('global-bar');
@@ -120,15 +155,31 @@ HTML_TEMPLATE = """
             <div class="psi-bar"><div class="psi-fill ${psiColor(n.psi)}" style="width:${pct}%"></div></div>
           </div>`;
         }).join('');
+
+        updateDebugInfo();
       } catch (e) {
+        if (e.name === 'AbortError') {
+          showError('Timeout de conexión (5s)');
+        } else {
+          showError(e.message);
+        }
         console.error('Error cargando estado:', e);
       }
     }
 
     async function loadLedger() {
       try {
-        const r = await fetch('/api/emissions_log?tail=10');
-        const rows = await r.json();
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+
+        const response = await fetch('/api/emissions_log?tail=10', { signal: controller.signal });
+        clearTimeout(timeout);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const rows = await response.json();
         const tbody = document.getElementById('ledger-body');
         if (!rows.length) {
           tbody.innerHTML = '<tr><td colspan="4">Sin emisiones registradas.</td></tr>';
@@ -137,12 +188,20 @@ HTML_TEMPLATE = """
         tbody.innerHTML = [...rows].reverse().map(row =>
           `<tr><td>${row.timestamp}</td><td>${row.global_psi}</td><td>${row.emission_amount}</td><td>${row.transaction_id}</td></tr>`
         ).join('');
-      } catch (e) { console.error('Error cargando ledger:', e); }
+      } catch (e) {
+        if (e.name !== 'AbortError') {
+          console.error('Error cargando ledger:', e);
+        }
+      }
     }
 
-    loadState(); loadLedger();
+    // Cargas iniciales y ciclos de actualización sincronizados
+    loadState();
+    loadLedger();
+    
+    // Actualizar cada 10 segundos (sincronizado)
     setInterval(loadState, 10000);
-    setInterval(loadLedger, 30000);
+    setInterval(loadLedger, 10000);
   </script>
 </body>
 </html>
@@ -156,7 +215,15 @@ def dashboard():
 
 @app.route("/api/mesh_state")
 def mesh_state():
-    return jsonify(sync_mesh_with_real_sources())
+    data = sync_mesh_with_real_sources()
+    # Agregar información de contexto
+    resonance_status = resonance.get_resonance_status()
+    data["qcal"] = {
+        "modo_real": resonance_status["QCAL_REAL_TESTS"],
+        "dev_mode": resonance_status["QCAL_DEV_MODE"],
+        "entorno": resonance_status["entorno"],
+    }
+    return jsonify(data)
 
 
 @app.route("/api/node_catalog")
@@ -189,5 +256,14 @@ def mcp_endpoint():
 
 
 if __name__ == "__main__":
-    print("Dashboard local activo en http://127.0.0.1:8505 (servidor Flask de desarrollo)")
-    app.run(host="127.0.0.1", port=8505, debug=False)
+    print("=" * 70)
+    print("🌀 DASHBOARD QCAL-EPR - NORMALIZADO A PUERTO 5000")
+    print("=" * 70)
+    print("")
+    print("✅ Dashboard activo en http://127.0.0.1:5000")
+    print("✅ Sincronización: 10 segundos")
+    print("✅ Error handling: Timeouts + fallback")
+    print("✅ Debug info: Modo y entorno visible")
+    print("")
+    print("=" * 70)
+    app.run(host="127.0.0.1", port=5000, debug=False)
