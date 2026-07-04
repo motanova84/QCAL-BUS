@@ -48,6 +48,7 @@ GLOBAL_THRESHOLD = float(os.getenv("QCAL_GLOBAL_THRESHOLD", "0.999999"))
 SATURATION_CYCLES = int(os.getenv("QCAL_SATURATION_CYCLES", "3"))
 SYNC_INTERVAL_SECONDS = int(os.getenv("QCAL_SYNC_INTERVAL_SECONDS", "60"))
 LEDGER_TAIL_DEFAULT = int(os.getenv("QCAL_LEDGER_TAIL", "50"))
+BASE_RESONANCE_FREQUENCY = 141.7001  # Hz — frecuencia fundamental de la malla QCAL-EPR
 
 _STATE = {"saturation_streak": 0}
 _STREAK_LOCK = threading.Lock()
@@ -458,7 +459,7 @@ def sync_mesh_with_real_sources():
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    logger.info("QCAL-BUS iniciando — 141.7001 Hz")
+    logger.info("QCAL-BUS iniciando — %.4f Hz", BASE_RESONANCE_FREQUENCY)
     args = _build_arg_parser().parse_args()
 
     if args.csv:
