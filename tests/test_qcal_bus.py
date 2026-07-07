@@ -73,6 +73,12 @@ class TestResonance:
 # ---------------------------------------------------------------------------
 
 class TestMeshSyncHelpers:
+    def test_catalog_path_points_to_registry(self):
+        assert bus.CATALOG_PATH == bus.ROOT_DIR / "registry" / "NODE_CATALOG.json"
+
+    def test_legacy_catalog_removed(self):
+        assert not (bus.ROOT_DIR / "registro" / "NODE_CATALOG.json").exists()
+
     def test_load_catalog(self):
         catalog = bus.load_catalog()
         assert "meta" in catalog
