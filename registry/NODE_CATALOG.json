@@ -110,6 +110,21 @@
         "reynolds_cuantico": "4.99e+09",
         "regimen": "TURBULENTO CONTROLADO \u2014 V\u00eda III confirmada",
         "fecha_verificacion": "2026-07-17T12:22:00Z"
+      },
+      "lean4_formalization": {
+        "archivo": "QCAL_VIA_III.lean",
+        "teoremas": [
+          "restoration_irrotational: curl(F_res) = 0",
+          "enstrophy_evolution: dE/dt = -nu*int|omega|^2",
+          "enstrophy_stability: dE/dt <= 0",
+          "asymptotic_laminarity: lim E(t) = 0",
+          "reynolds_consistency: Re_q = 4.99e9",
+          "unification_colapse: 15:15 UTC invariant"
+        ],
+        "demostrados": 6,
+        "sorries": 0,
+        "funcion_lyapunov": "TotalEnstrophy",
+        "fecha": "2026-07-17T12:23:00Z"
       }
     },
     "p-np-qcal": {
