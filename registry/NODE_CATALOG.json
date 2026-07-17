@@ -163,7 +163,21 @@
         "ramsey",
         "sat-verification",
         "qcal"
-      ]
+      ],
+      "integracion_qhpt": {
+        "kernel": "qhpt_ramsey_bridge.py",
+        "R55": 43,
+        "R66": 108,
+        "teoremas": 14,
+        "sorries": 0,
+        "certificacion": "SAT + Lean4 + Z3 (triple)",
+        "nodos_bus": 35,
+        "margen_estructural": 73,
+        "estado": "SEGURO",
+        "conexiones": 35,
+        "filtro_combinatorio": "Verifica coloracion cromatica del grafo de conectividad",
+        "ultima_verificacion": "2026-07-17T13:20:00Z"
+      }
     },
     "adelic-bsd": {
       "mcp_id": "bsd-mcp-server",
