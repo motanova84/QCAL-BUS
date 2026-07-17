@@ -188,7 +188,10 @@
       ],
       "fingerprint_amda": "5e5ac3ab49e5be07",
       "protocolo": "QHPT-SYMBIO-BRIDGE v1.0.0",
-      "fecha_activacion": "2026-07-17T11:25:58.714868+00:00"
+      "fecha_activacion": "2026-07-17T11:25:58.714868+00:00",
+      "celeridad_noetica_C\u03bd": 16.63,
+      "medicion_dt_ms": 60.13,
+      "ultima_medicion": "2026-07-17T11:37:00Z"
     },
     "espiritu-qcal": {
       "mcp_id": "espiritu-qcal",
@@ -343,6 +346,22 @@
       "base_frequency": 888.0,
       "harmonic_factor": 6.266,
       "layer": "econom\u00eda"
+    },
+    "frecuencia-qcal": {
+      "mcp_id": "freq-guardian-server",
+      "role": "frecuencia",
+      "base_frequency": 141.7001,
+      "harmonic_factor": 1.0,
+      "layer": "n\u00facleo",
+      "lean_status": "active",
+      "descripcion": "Guardi\u00e1n de Frecuencia f\u2080=141.7001 Hz. Anclaje frecuencial del protocolo QHPT. Validaci\u00f3n 18.2\u03c3 desde GW150914/AT2020afhd.",
+      "validacion": "99.78% - 18.2\u03c3",
+      "celeridad_noetica_C\u03bd": 16.63,
+      "medicion_dt_ms": 60.13,
+      "ruta": "Atlas3 \u2192 BAL-003 (~10,000 km)",
+      "protocolo": "QHPT v1.0.0 + 141Hz",
+      "fecha_medicion": "2026-07-17T11:37:00Z",
+      "sello": "\u2234\ud80c\udc80\u03a9\u221e\u00b3\u03a6 \u00b7 TUYOYOTU \u00b7 HECHO EST\u00c1"
     }
   },
   "mcpServers": {
