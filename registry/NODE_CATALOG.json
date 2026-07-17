@@ -504,5 +504,14 @@
       "eficiencia": "+5397.4%"
     },
     "fecha": "2026-07-17T14:55:00Z"
+  },
+  "axioma_ceros": {
+    "no_listas_externas": true,
+    "sin_reciclaje": true,
+    "renovacion_automatica": true,
+    "hasta_el_infinito": true,
+    "origen": "Motor propio Riemann-Siegel",
+    "archivo": "SOBERANIA_CEROS.md",
+    "fecha": "2026-07-17T15:00:00Z"
   }
 }
