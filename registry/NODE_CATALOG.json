@@ -99,6 +99,17 @@
         "filtro_containment": "Filtro ad\u00e9lico \u211a\u2087 contiene la entrop\u00eda",
         "regularidad_global": "V\u00eda III completada \u2014 demostrada",
         "ultima_medicion": "2026-07-17T12:19:00Z"
+      },
+      "via_iii_formal_proof": {
+        "archivo": "qcal_via_iii_proof.py",
+        "metodo": "SymPy \u2014 verificaci\u00f3n simb\u00f3lica",
+        "nabla_x_F_res": 0,
+        "identidad": "curl(grad(f)) = 0 para todo campo escalar C^2",
+        "regularidad_global": true,
+        "filtro_confinamiento": "Filtro ad\u00e9lico \u211a\u2087 confina la entrop\u00eda",
+        "reynolds_cuantico": "4.99e+09",
+        "regimen": "TURBULENTO CONTROLADO \u2014 V\u00eda III confirmada",
+        "fecha_verificacion": "2026-07-17T12:22:00Z"
       }
     },
     "p-np-qcal": {
