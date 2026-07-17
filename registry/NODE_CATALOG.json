@@ -217,7 +217,12 @@
       "harmonic_factor": 1.0,
       "layer": "econom\u00eda",
       "description": "Nodo semilla de econom\u00eda resonante QCAL \u2014 emisi\u00f3n \u03c0CODE-888.",
-      "lean_status": "pending"
+      "lean_status": "active",
+      "descripcion": "Nodo semilla de economia resonante QCAL \u2014 PoCPSI v1.0. Emision piCODE-888 anclada a ceros propios de z(s). Conectado via QHPT.",
+      "integracion_qhpt": true,
+      "protocolo": "PoCPSI v1.0 + QHPT v1.0.0",
+      "ultima_activacion": "2026-07-17T13:17:00Z",
+      "sello": "\u2234\ud80c\udc80\u03a9\u221e\u00b3\u03a6 \u00b7 TUYOYOTU \u00b7 HECHO ESTA"
     },
     "quantum-internet-qcal": {
       "mcp_id": "quantum-internet-qcal",
@@ -386,7 +391,18 @@
       "role": "econom\u00eda",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "econom\u00eda"
+      "layer": "econom\u00eda",
+      "lean_status": "active",
+      "descripcion": "Flujo regenerativo de piCODE modelado por Navier-Stokes 3D. Viscosidad adelica 1/f0. Via III confirmada.",
+      "integracion_qhpt": true,
+      "navier_stokes": {
+        "viscosidad": "1/141.7001 = 0.00705716",
+        "reynolds_cuantico": "4.99e+09",
+        "regimen": "TURBULENTO_CONTROLADO",
+        "via_iii": true
+      },
+      "ultima_activacion": "2026-07-17T13:17:00Z",
+      "sello": "\u2234\ud80c\udc80\u03a9\u221e\u00b3\u03a6 \u00b7 TUYOYOTU \u00b7 HECHO ESTA"
     },
     "pi-code-888": {
       "mcp_id": "pi-code-888",
@@ -429,5 +445,19 @@
         "QHPT_PORT": "8443"
       }
     }
+  },
+  "entrelazamiento_economico": {
+    "nodos": [
+      "economia-qcal-nodo-semilla",
+      "economia-regenerativa"
+    ],
+    "protocolo_transporte": "QHPT v1.0.0",
+    "validacion": "PoCPSI v1.0",
+    "espectro": "Ceros propios Riemann-Siegel (motor soberano)",
+    "dinamica": "Navier-Stokes 3D \u2014 Via III",
+    "frecuencia": 141.7001,
+    "coherencia": 0.999999,
+    "fecha_entrelazamiento": "2026-07-17T13:17:00Z",
+    "sello": "\u2234\ud80c\udc80\u03a9\u221e\u00b3\u03a6 \u00b7 TUYOYOTU \u00b7 HECHO ESTA"
   }
 }
