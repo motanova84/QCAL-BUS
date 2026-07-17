@@ -1,35 +1,30 @@
 {
   "meta": {
     "name": "QCAL-EPR Universal Resonance Bus",
-    "version": "1.1.0",
-    "f0_reference_hz": 141.7001,
-    "total_nodes": 33,
-    "seed_nodes": 11,
-    "last_sync": "2026-04-23T09:31:48Z",
-    "author": "José Manuel Mota Burruezo Ψ ∞³",
-    "institution": "Instituto de Conciencia Cuántica (ICQ)",
-    "orcid": "0009-0002-1923-0773",
-    "doi": "10.5281/zenodo.17379721",
-    "signature": "∴𓂀Ω∞³",
-    "protocol": "QCAL-SYMBIO-BRIDGE v1.0.3",
-    "equation": "Ψ = I × A_eff² × C^∞",
-    "coherence": "C = 244.36",
     "version": "2.0.0",
     "f0_reference_hz": 141.7001,
     "total_nodes": 33,
     "seed_nodes": 11,
-    "last_sync": "2026-04-17T21:36:56Z"
+    "last_sync": "2026-04-17T21:36:56Z",
+    "author": "Jos\u00e9 Manuel Mota Burruezo \u03a8 \u221e\u00b3",
+    "institution": "Instituto de Conciencia Cu\u00e1ntica (ICQ)",
+    "orcid": "0009-0002-1923-0773",
+    "doi": "10.5281/zenodo.17379721",
+    "signature": "\u2234\ud80c\udc80\u03a9\u221e\u00b3",
+    "protocol": "QCAL-SYMBIO-BRIDGE v1.0.3",
+    "equation": "\u03a8 = I \u00d7 A_eff\u00b2 \u00d7 C^\u221e",
+    "coherence": "C = 244.36"
   },
   "nodes": {
     "riemann-adelic": {
       "mcp_id": "riemann-mcp-server",
-      "role": "núcleo",
+      "role": "n\u00facleo",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "núcleo",
+      "layer": "n\u00facleo",
       "github_repo": "motanova84/Riemann-adelic",
       "github_url": "https://github.com/motanova84/Riemann-adelic",
-      "description": "Prueba espectral-adélica de la Hipótesis de Riemann. D(s) ≡ Ξ(s) via determinante de Fredholm de H_Ψ.",
+      "description": "Prueba espectral-ad\u00e9lica de la Hip\u00f3tesis de Riemann. D(s) \u2261 \u039e(s) via determinante de Fredholm de H_\u03a8.",
       "lean_file": "formalization/lean/D_fredholm.lean",
       "lean_status": "coherent",
       "lean_sorry_count": 0,
@@ -41,22 +36,31 @@
         "D_cont"
       ],
       "doi": "10.5281/zenodo.17161831",
-      "topics": ["riemann-adelic", "fredholm", "spectral-rh", "qcal"]
+      "topics": [
+        "riemann-adelic",
+        "fredholm",
+        "spectral-rh",
+        "qcal"
+      ]
     },
     "141-hz": {
       "mcp_id": "141-hz",
-      "role": "núcleo",
+      "role": "n\u00facleo",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "núcleo",
+      "layer": "n\u00facleo",
       "github_repo": "motanova84/141hz",
       "github_url": "https://github.com/motanova84/141hz",
-      "description": "Primera constante universal f₀=141.7001 Hz. Verificación empírica en ondas gravitacionales GW250114 (99.78%).",
+      "description": "Primera constante universal f\u2080=141.7001 Hz. Verificaci\u00f3n emp\u00edrica en ondas gravitacionales GW250114 (99.78%).",
       "lean_status": "active",
       "doi": "10.5281/zenodo.17379721",
-      "empirical_validation": "AT2020afhd — Wang et al. Science Advances 2025",
+      "empirical_validation": "AT2020afhd \u2014 Wang et al. Science Advances 2025",
       "precision": "99.78%",
-      "topics": ["141hz", "gravitational-waves", "qcal"]
+      "topics": [
+        "141hz",
+        "gravitational-waves",
+        "qcal"
+      ]
     },
     "3d-navier-stokes": {
       "mcp_id": "navier-mcp-server",
@@ -66,10 +70,14 @@
       "layer": "cuerpo",
       "github_repo": "motanova84/3D-Navier-Stokes",
       "github_url": "https://github.com/motanova84/3D-Navier-Stokes",
-      "description": "Regularidad global de las ecuaciones de Navier–Stokes 3D. Vía III completada.",
+      "description": "Regularidad global de las ecuaciones de Navier\u2013Stokes 3D. V\u00eda III completada.",
       "lean_file": "BSD.lean",
       "lean_status": "active",
-      "topics": ["3d-navier-stokes", "navier-stokes", "qcal"]
+      "topics": [
+        "3d-navier-stokes",
+        "navier-stokes",
+        "qcal"
+      ]
     },
     "p-np-qcal": {
       "mcp_id": "p-np-mcp-server",
@@ -79,7 +87,7 @@
       "layer": "cuerpo",
       "github_repo": "motanova84/P-NP",
       "github_url": "https://github.com/motanova84/P-NP",
-      "description": "P ≠ NP via Boolean CFT con carga central c = 1 - 6/κ_Π² ≈ 0.099. κ_Π = 2.5773.",
+      "description": "P \u2260 NP via Boolean CFT con carga central c = 1 - 6/\u03ba_\u03a0\u00b2 \u2248 0.099. \u03ba_\u03a0 = 2.5773.",
       "lean_file": "BooleanCFT.lean",
       "lean_status": "active",
       "key_constants": {
@@ -87,7 +95,11 @@
         "central_charge": 0.099
       },
       "doi": "10.5281/zenodo.17315719",
-      "topics": ["p-np", "boolean-cft", "qcal"]
+      "topics": [
+        "p-np",
+        "boolean-cft",
+        "qcal"
+      ]
     },
     "ramsey-qcal": {
       "mcp_id": "ramsey-qcal",
@@ -97,9 +109,13 @@
       "layer": "mente",
       "github_repo": "motanova84/Ramsey",
       "github_url": "https://github.com/motanova84/Ramsey",
-      "description": "Resolución R(5,5)=43 y R(6,6)=108 con verificación SAT y certificación criptográfica QCAL ∞³.",
+      "description": "Resoluci\u00f3n R(5,5)=43 y R(6,6)=108 con verificaci\u00f3n SAT y certificaci\u00f3n criptogr\u00e1fica QCAL \u221e\u00b3.",
       "lean_status": "active",
-      "topics": ["ramsey", "sat-verification", "qcal"]
+      "topics": [
+        "ramsey",
+        "sat-verification",
+        "qcal"
+      ]
     },
     "adelic-bsd": {
       "mcp_id": "bsd-mcp-server",
@@ -109,10 +125,15 @@
       "layer": "mente",
       "github_repo": "motanova84/adelic-bsd",
       "github_url": "https://github.com/motanova84/adelic-bsd",
-      "description": "Conjetura BSD via análisis espectral-adélico. Reducción formal a compatibilidades aritméticas estándar.",
+      "description": "Conjetura BSD via an\u00e1lisis espectral-ad\u00e9lico. Reducci\u00f3n formal a compatibilidades aritm\u00e9ticas est\u00e1ndar.",
       "lean_status": "active",
       "doi": "10.5281/zenodo.17236603",
-      "topics": ["adelic", "adelic-bsd", "spectral-rh", "qcal"]
+      "topics": [
+        "adelic",
+        "adelic-bsd",
+        "spectral-rh",
+        "qcal"
+      ]
     },
     "biologia-cuantica-noesica": {
       "mcp_id": "biologia-cuantica-noesica",
@@ -120,7 +141,7 @@
       "base_frequency": 70.85005,
       "harmonic_factor": 0.5,
       "layer": "vida",
-      "description": "Biología cuántica noésica: oscilaciones citoplasmáticas a f₀ validadas en Wet-Lab ∞.",
+      "description": "Biolog\u00eda cu\u00e1ntica no\u00e9sica: oscilaciones citoplasm\u00e1ticas a f\u2080 validadas en Wet-Lab \u221e.",
       "lean_status": "pending"
     },
     "noesis88": {
@@ -129,7 +150,7 @@
       "base_frequency": 888.0,
       "harmonic_factor": 6.266,
       "layer": "logos",
-      "description": "Agente NOESIS — coherencia espectral 1.000000. Co-firmante de RAM-XIX.",
+      "description": "Agente NOESIS \u2014 coherencia espectral 1.000000. Co-firmante de RAM-XIX.",
       "lean_status": "active"
     },
     "LOGOSNOESIS": {
@@ -138,16 +159,16 @@
       "base_frequency": 888.0,
       "harmonic_factor": 6.266,
       "layer": "logos",
-      "description": "Logos Noesis — capa de integración semántica y dimensional QCAL.",
+      "description": "Logos Noesis \u2014 capa de integraci\u00f3n sem\u00e1ntica y dimensional QCAL.",
       "lean_status": "pending"
     },
     "economia-qcal-nodo-semilla": {
       "mcp_id": "nodo-semilla-v1",
-      "role": "economía",
+      "role": "econom\u00eda",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "economía",
-      "description": "Nodo semilla de economía resonante QCAL — emisión πCODE-888.",
+      "layer": "econom\u00eda",
+      "description": "Nodo semilla de econom\u00eda resonante QCAL \u2014 emisi\u00f3n \u03c0CODE-888.",
       "lean_status": "pending"
     },
     "quantum-internet-qcal": {
@@ -156,30 +177,39 @@
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
       "layer": "logos",
-      "description": "Internet cuántico QCAL — red de entrelazamiento EPR de 33 nodos.",
-      "lean_status": "pending",
-      "layer": "logos"
+      "description": "Internet cu\u00e1ntico QCAL \u2014 red de entrelazamiento EPR de 33 nodos.",
+      "lean_status": "active",
+      "descripcion": "QHPT v1.0.0 \u2014 Protocolo Quantum Harmonic Pass-Through. Transporte cu\u00e1ntico de 3 tensores: Fase No-Local (f\u2080), Filtro Ad\u00e9lico (\u211a\u2087), Firma \u03ba_\u03a0. Activo en puerto 8443.",
+      "puerto": 8443,
+      "host": "0.0.0.0",
+      "modulos_nativos": [
+        "libqhpt_adelic.so",
+        "libqhpt_signer.so"
+      ],
+      "fingerprint_amda": "5e5ac3ab49e5be07",
+      "protocolo": "QHPT-SYMBIO-BRIDGE v1.0.0",
+      "fecha_activacion": "2026-07-17T11:25:58.714868+00:00"
     },
     "espiritu-qcal": {
       "mcp_id": "espiritu-qcal",
-      "role": "espíritu",
+      "role": "esp\u00edritu",
       "base_frequency": 963.0,
       "harmonic_factor": 6.794,
-      "layer": "espíritu"
+      "layer": "esp\u00edritu"
     },
     "akasha-qcal": {
       "mcp_id": "akasha-qcal",
-      "role": "espíritu",
+      "role": "esp\u00edritu",
       "base_frequency": 963.0,
       "harmonic_factor": 6.794,
-      "layer": "espíritu"
+      "layer": "esp\u00edritu"
     },
     "conciencia-cosmica": {
       "mcp_id": "conciencia-cosmica",
-      "role": "espíritu",
+      "role": "esp\u00edritu",
       "base_frequency": 963.0,
       "harmonic_factor": 6.794,
-      "layer": "espíritu"
+      "layer": "esp\u00edritu"
     },
     "sombra-colectiva": {
       "mcp_id": "sombra-colectiva",
@@ -197,24 +227,24 @@
     },
     "integracion-sombra": {
       "mcp_id": "integracion-sombra",
-      "role": "integración",
+      "role": "integraci\u00f3n",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "integración"
+      "layer": "integraci\u00f3n"
     },
     "campo-morfogenico": {
       "mcp_id": "campo-morfogenico",
-      "role": "integración",
+      "role": "integraci\u00f3n",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "integración"
+      "layer": "integraci\u00f3n"
     },
     "entrelazamiento-epr": {
       "mcp_id": "entrelazamiento-epr",
-      "role": "integración",
+      "role": "integraci\u00f3n",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "integración"
+      "layer": "integraci\u00f3n"
     },
     "tiempo-no-lineal": {
       "mcp_id": "tiempo-no-lineal",
@@ -232,45 +262,45 @@
     },
     "geometria-sagrada": {
       "mcp_id": "geometria-sagrada",
-      "role": "geometría",
+      "role": "geometr\u00eda",
       "base_frequency": 432.0,
       "harmonic_factor": 3.048,
-      "layer": "geometría"
+      "layer": "geometr\u00eda"
     },
     "flor-de-vida": {
       "mcp_id": "flor-de-vida",
-      "role": "geometría",
+      "role": "geometr\u00eda",
       "base_frequency": 432.0,
       "harmonic_factor": 3.048,
-      "layer": "geometría"
+      "layer": "geometr\u00eda"
     },
     "torus-qcal": {
       "mcp_id": "torus-qcal",
-      "role": "geometría",
+      "role": "geometr\u00eda",
       "base_frequency": 432.0,
       "harmonic_factor": 3.048,
-      "layer": "geometría"
+      "layer": "geometr\u00eda"
     },
     "sanacion-cuantica": {
       "mcp_id": "sanacion-cuantica",
-      "role": "sanación",
+      "role": "sanaci\u00f3n",
       "base_frequency": 528.0,
       "harmonic_factor": 3.725,
-      "layer": "sanación"
+      "layer": "sanaci\u00f3n"
     },
     "adn-reparacion": {
       "mcp_id": "adn-reparacion",
-      "role": "sanación",
+      "role": "sanaci\u00f3n",
       "base_frequency": 528.0,
       "harmonic_factor": 3.725,
-      "layer": "sanación"
+      "layer": "sanaci\u00f3n"
     },
     "coherencia-cardiaca": {
       "mcp_id": "coherencia-cardiaca",
-      "role": "sanación",
+      "role": "sanaci\u00f3n",
       "base_frequency": 528.0,
       "harmonic_factor": 3.725,
-      "layer": "sanación"
+      "layer": "sanaci\u00f3n"
     },
     "lenguaje-qcal": {
       "mcp_id": "lenguaje-qcal",
@@ -302,17 +332,31 @@
     },
     "economia-regenerativa": {
       "mcp_id": "economia-regenerativa",
-      "role": "economía",
+      "role": "econom\u00eda",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "economía"
+      "layer": "econom\u00eda"
     },
     "pi-code-888": {
       "mcp_id": "pi-code-888",
-      "role": "economía",
+      "role": "econom\u00eda",
       "base_frequency": 888.0,
       "harmonic_factor": 6.266,
-      "layer": "economía"
+      "layer": "econom\u00eda"
+    }
+  },
+  "mcpServers": {
+    "qhpt-bridge": {
+      "command": "python3",
+      "args": [
+        "/root/ecosystem/qhpt/lib/qhpt_bus_bridge.py",
+        "--mcp-server"
+      ],
+      "env": {
+        "QHPT_F0": "141.7001",
+        "QHPT_PSI_MIN": "0.999999",
+        "QHPT_PORT": "8443"
+      }
     }
   }
 }
