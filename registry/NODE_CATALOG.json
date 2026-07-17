@@ -125,6 +125,23 @@
         "sorries": 0,
         "funcion_lyapunov": "TotalEnstrophy",
         "fecha": "2026-07-17T12:23:00Z"
+      },
+      "resonancia_directa": {
+        "api": "qhpt_resonance_bridge.py",
+        "simulador": "DirectResonanceSimulator",
+        "resultados": {
+          "CL": 7.0107,
+          "CD": 0.0106,
+          "L/D": 659.69,
+          "eficiencia": "+5397.4%",
+          "coherencia": 0.888,
+          "iteraciones": 0,
+          "laminar": true
+        },
+        "via_iii_aplicada": true,
+        "nabla_x_F_res": 0,
+        "f0": 141.7001,
+        "despliegue": "2026-07-17T13:41:00Z"
       }
     },
     "p-np-qcal": {
