@@ -393,7 +393,11 @@
       "role": "econom\u00eda",
       "base_frequency": 888.0,
       "harmonic_factor": 6.266,
-      "layer": "econom\u00eda"
+      "layer": "econom\u00eda",
+      "github_url": "https://github.com/motanova84/picode",
+      "lean_status": "active",
+      "protocolo": "PoCPSI v1.0",
+      "ultima_sincronizacion": "2026-07-17T12:15:00Z"
     },
     "frecuencia-qcal": {
       "mcp_id": "freq-guardian-server",
