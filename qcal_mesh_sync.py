@@ -51,6 +51,7 @@ LEDGER_TAIL_DEFAULT = int(os.getenv("QCAL_LEDGER_TAIL", "50"))
 _STATE = {"saturation_streak": 0}
 _STREAK_LOCK = threading.Lock()
 OFFLINE_ERROR_TRUNCATE = 120
+BASE_RESONANCE_FREQUENCY = 141.7001  # Hz — frecuencia fundamental de la malla QCAL-EPR
 
 
 # ---------------------------------------------------------------------------
@@ -58,6 +59,7 @@ OFFLINE_ERROR_TRUNCATE = 120
 # ---------------------------------------------------------------------------
 
 def load_catalog() -> dict:
+    """Carga y valida el catálogo de nodos QCAL desde el registro canónico."""
     if not CATALOG_PATH.exists():
         logger.error("Fisura detectada: No se encuentra el catálogo en %s", CATALOG_PATH)
         raise FileNotFoundError(f"Catálogo no encontrado: {CATALOG_PATH}")
@@ -481,23 +483,9 @@ def _build_arg_parser() -> argparse.ArgumentParser:
 
 
 # ---------------------------------------------------------------------------
-# Entry point
+# Public orchestrator entry point
 # ---------------------------------------------------------------------------
 
-if __name__ == "__main__":
-    args = _build_arg_parser().parse_args()
-
-    if args.csv:
-        LEDGER_PATH = Path(args.csv).resolve()
-
-    if args.interval is not None:
-        SYNC_INTERVAL_SECONDS = args.interval
-
-    if args.mcp_server:
-        run_mcp_server()
-    else:
-        # --loop or no flag → continuous monitoring loop
-        run_monitor_loop(interval_seconds=SYNC_INTERVAL_SECONDS)
 def sync_mesh_with_real_sources():
     """
     Sincroniza la malla completa con manejo de errores robusto y
@@ -513,3 +501,24 @@ def sync_mesh_with_real_sources():
         return {"global_psi": 0.0, "status": "CATALOG_NOT_FOUND"}
     except json.JSONDecodeError:
         return {"global_psi": 0.0, "status": "JSON_MALFORMED"}
+
+
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
+
+if __name__ == "__main__":
+    logger.info("QCAL-BUS iniciando — %.4f Hz", BASE_RESONANCE_FREQUENCY)
+    args = _build_arg_parser().parse_args()
+
+    if args.csv:
+        LEDGER_PATH = Path(args.csv).resolve()
+
+    if args.interval is not None:
+        SYNC_INTERVAL_SECONDS = args.interval
+
+    if args.mcp_server:
+        run_mcp_server()
+    else:
+        # --loop or no flag → continuous monitoring loop
+        run_monitor_loop(interval_seconds=SYNC_INTERVAL_SECONDS)
