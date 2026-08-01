@@ -240,7 +240,11 @@ def run_monitor_loop(
 # Main monitor
 # ---------------------------------------------------------------------------
 
-def monitor_global_resonance(verbose: bool = True) -> dict:
+def monitor_global_resonance(
+    verbose: bool = True,
+    update_state: bool = True,
+    allow_emission: bool = True,
+) -> dict:
     catalog = load_catalog()
     meta = catalog.get("meta", {})
     nodes = catalog.get("nodes", {})
@@ -294,10 +298,11 @@ def monitor_global_resonance(verbose: bool = True) -> dict:
         print(f"Ψ_GLOBAL_ECOSISTEMA = {global_psi:.8f} | UTC: {now_utc}")
 
     with _STREAK_LOCK:
-        if global_psi >= GLOBAL_THRESHOLD:
-            _STATE["saturation_streak"] += 1
-        else:
-            _STATE["saturation_streak"] = 0
+        if update_state:
+            if global_psi >= GLOBAL_THRESHOLD:
+                _STATE["saturation_streak"] += 1
+            else:
+                _STATE["saturation_streak"] = 0
 
         current_streak = _STATE["saturation_streak"]
 
@@ -314,7 +319,7 @@ def monitor_global_resonance(verbose: bool = True) -> dict:
         "timestamp": now_utc,
     }
 
-    if current_streak >= SATURATION_CYCLES:
+    if allow_emission and current_streak >= SATURATION_CYCLES:
         emission = append_emission(global_psi, node_status)
         response["status"] = "RESONANCIA_SATURADA"
         response["emission"] = emission
@@ -368,7 +373,7 @@ def _mcp_list_tools() -> dict:
 
 def _mcp_call_tool(name: str, arguments: dict) -> dict:
     if name == "get_mesh_state":
-        result = monitor_global_resonance(verbose=False)
+        result = sync_mesh_with_real_sources()
         return {"content": [{"type": "text", "text": json.dumps(result, ensure_ascii=False)}]}
 
     if name == "get_node_catalog":
@@ -499,7 +504,11 @@ def sync_mesh_with_real_sources():
     detección dinámica de mcp_network. Punto de entrada público del orquestador.
     """
     try:
-        return monitor_global_resonance(verbose=False)
+        return monitor_global_resonance(
+            verbose=False,
+            update_state=False,
+            allow_emission=False,
+        )
     except FileNotFoundError:
         return {"global_psi": 0.0, "status": "CATALOG_NOT_FOUND"}
     except json.JSONDecodeError:

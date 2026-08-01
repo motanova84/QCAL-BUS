@@ -119,7 +119,7 @@ class TestMeshSyncHelpers:
     def test_validate_catalog_integrity(self):
         report = bus.validate_catalog_integrity()
         assert report["ok"] is True
-        assert report["total_nodes"] == 33
+        assert report["total_nodes"] == bus.load_catalog()["meta"]["total_nodes"]
         assert report["missing_endpoints"] == []
 
     def test_run_preflight_checks(self):
@@ -127,7 +127,27 @@ class TestMeshSyncHelpers:
         assert report["catalog"]["ok"] is True
         assert report["ledger"]["ok"] is True
         assert report["mcp"]["bridge_path"] == "/api/mcp"
-        assert report["health"]["total_nodes"] == 33
+        assert report["health"]["total_nodes"] == bus.load_catalog()["meta"]["total_nodes"]
+
+    def test_run_preflight_checks_does_not_advance_streak_or_emit(self, tmp_path, monkeypatch):
+        ledger = tmp_path / "ledger" / "emissions_log.csv"
+        monkeypatch.setattr(bus, "LEDGER_PATH", ledger)
+        monkeypatch.setattr(
+            bus,
+            "check_node_resonance",
+            lambda _mcp_id: {
+                "psi": 1.0,
+                "resonance": "COHERENCIA_TOTAL",
+                "qcal": {"modo_real": False},
+            },
+        )
+        monkeypatch.setitem(bus._STATE, "saturation_streak", 0)
+
+        report = bus.run_preflight_checks()
+
+        assert report["mesh_state"]["global_psi"] == 1.0
+        assert bus._STATE["saturation_streak"] == 0
+        assert bus.read_emissions_log(tail=10) == []
 
     def test_run_monitor_loop_iterations(self, monkeypatch):
         calls = []
@@ -155,9 +175,9 @@ class TestMonitorGlobalResonance:
         result = bus.monitor_global_resonance(verbose=False)
         assert 0.0 <= result["global_psi"] <= 1.0
 
-    def test_all_33_nodes_present(self):
+    def test_all_catalog_nodes_present(self):
         result = bus.monitor_global_resonance(verbose=False)
-        assert len(result["nodes"]) == 33
+        assert len(result["nodes"]) == bus.load_catalog()["meta"]["total_nodes"]
 
 
 # ---------------------------------------------------------------------------
