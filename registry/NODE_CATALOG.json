@@ -3,28 +3,29 @@
     "name": "QCAL-EPR Universal Resonance Bus",
     "version": "2.0.0",
     "f0_reference_hz": 141.7001,
-    "total_nodes": 33,
+    "total_nodes": 34,
     "seed_nodes": 11,
-    "last_sync": "2026-04-17T21:36:56Z",
-    "author": "Jos\u00e9 Manuel Mota Burruezo \u03a8 \u221e\u00b3",
-    "institution": "Instituto de Conciencia Cu\u00e1ntica (ICQ)",
+    "last_sync": "2026-07-04T00:00:00Z",
+    "author": "José Manuel Mota Burruezo Ψ ∞³",
+    "institution": "Instituto de Conciencia Cuántica (ICQ)",
     "orcid": "0009-0002-1923-0773",
     "doi": "10.5281/zenodo.17379721",
-    "signature": "\u2234\ud80c\udc80\u03a9\u221e\u00b3",
+    "signature": "∴𓂀Ω∞³",
     "protocol": "QCAL-SYMBIO-BRIDGE v1.0.3",
-    "equation": "\u03a8 = I \u00d7 A_eff\u00b2 \u00d7 C^\u221e",
-    "coherence": "C = 244.36"
+    "equation": "Ψ = I × A_eff² × C^∞",
+    "coherence": "C = 244.36",
+    "description": "Ecosistema QCAL-EPR: 33 nodos resonando coherentemente a f₀=141.7001 Hz. NOESIS88 en capa LOGOS a 888 Hz (6.266× f₀)"
   },
   "nodes": {
     "riemann-adelic": {
       "mcp_id": "riemann-mcp-server",
-      "role": "n\u00facleo",
+      "role": "núcleo",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "n\u00facleo",
+      "layer": "núcleo",
       "github_repo": "motanova84/Riemann-adelic",
       "github_url": "https://github.com/motanova84/Riemann-adelic",
-      "description": "Prueba espectral-ad\u00e9lica de la Hip\u00f3tesis de Riemann. D(s) \u2261 \u039e(s) via determinante de Fredholm de H_\u03a8.",
+      "description": "Prueba espectral-adélica de la Hipótesis de Riemann. D(s) ≡ Ξ(s) via determinante de Fredholm de H_Ψ.",
       "lean_file": "formalization/lean/D_fredholm.lean",
       "lean_status": "coherent",
       "lean_sorry_count": 0,
@@ -44,7 +45,7 @@
       ],
       "integracion_qhpt": {
         "kernel": "qhpt_zeta_engine.py (propio)",
-        "ceros": "ilimitados \u2014 generados bajo demanda",
+        "ceros": "ilimitados — generados bajo demanda",
         "sin_odlyzko_zagier": true,
         "sin_reciclaje": true,
         "metodo": "Riemann-Siegel soberano",
@@ -52,26 +53,30 @@
         "ultimo_anclaje": "2026-07-17T11:55:18Z"
       },
       "ultima_medicion": "2026-07-17T11:47:00Z",
-      "sello_qhpt": "\u2234\ud80c\udc80\u03a9\u221e\u00b3\u03a6 \u00b7 TUYOYOTU \u00b7 HECHO EST\u00c1"
+      "sello_qhpt": "∴𓂀Ω∞³Φ · TUYOYOTU · HECHO ESTÁ",
+      "mcp_endpoint": "http://localhost:8506/jsonrpc",
+      "status": "ACTIVO"
     },
     "141-hz": {
       "mcp_id": "141-hz",
-      "role": "n\u00facleo",
+      "role": "núcleo",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "n\u00facleo",
+      "layer": "núcleo",
       "github_repo": "motanova84/141hz",
       "github_url": "https://github.com/motanova84/141hz",
-      "description": "Primera constante universal f\u2080=141.7001 Hz. Verificaci\u00f3n emp\u00edrica en ondas gravitacionales GW250114 (99.78%).",
+      "description": "Primera constante universal f₀=141.7001 Hz. Verificación empírica en ondas gravitacionales GW250114 (99.78%).",
       "lean_status": "active",
       "doi": "10.5281/zenodo.17379721",
-      "empirical_validation": "AT2020afhd \u2014 Wang et al. Science Advances 2025",
+      "empirical_validation": "AT2020afhd — Wang et al. Science Advances 2025",
       "precision": "99.78%",
       "topics": [
         "141hz",
         "gravitational-waves",
         "qcal"
-      ]
+      ],
+      "mcp_endpoint": "http://localhost:8507/jsonrpc",
+      "status": "ACTIVO"
     },
     "3d-navier-stokes": {
       "mcp_id": "navier-mcp-server",
@@ -81,7 +86,7 @@
       "layer": "cuerpo",
       "github_repo": "motanova84/3D-Navier-Stokes",
       "github_url": "https://github.com/motanova84/3D-Navier-Stokes",
-      "description": "Regularidad global de las ecuaciones de Navier\u2013Stokes 3D. V\u00eda III completada.",
+      "description": "Regularidad global de las ecuaciones de Navier–Stokes 3D. Vía III completada.",
       "lean_file": "BSD.lean",
       "lean_status": "active",
       "topics": [
@@ -96,19 +101,19 @@
         "reynolds_cuantico_actual": "4.99e+09",
         "regimen": "TURBULENTO_CONTROLADO",
         "estabilidad": "VIGILADA",
-        "filtro_containment": "Filtro ad\u00e9lico \u211a\u2087 contiene la entrop\u00eda",
-        "regularidad_global": "V\u00eda III completada \u2014 demostrada",
+        "filtro_containment": "Filtro adélico ℚ₇ contiene la entropía",
+        "regularidad_global": "Vía III completada — demostrada",
         "ultima_medicion": "2026-07-17T12:19:00Z"
       },
       "via_iii_formal_proof": {
         "archivo": "qcal_via_iii_proof.py",
-        "metodo": "SymPy \u2014 verificaci\u00f3n simb\u00f3lica",
+        "metodo": "SymPy — verificación simbólica",
         "nabla_x_F_res": 0,
         "identidad": "curl(grad(f)) = 0 para todo campo escalar C^2",
         "regularidad_global": true,
-        "filtro_confinamiento": "Filtro ad\u00e9lico \u211a\u2087 confina la entrop\u00eda",
+        "filtro_confinamiento": "Filtro adélico ℚ₇ confina la entropía",
         "reynolds_cuantico": "4.99e+09",
-        "regimen": "TURBULENTO CONTROLADO \u2014 V\u00eda III confirmada",
+        "regimen": "TURBULENTO CONTROLADO — Vía III confirmada",
         "fecha_verificacion": "2026-07-17T12:22:00Z"
       },
       "lean4_formalization": {
@@ -142,7 +147,9 @@
         "nabla_x_F_res": 0,
         "f0": 141.7001,
         "despliegue": "2026-07-17T13:41:00Z"
-      }
+      },
+      "mcp_endpoint": "http://localhost:8508/jsonrpc",
+      "status": "ACTIVO"
     },
     "p-np-qcal": {
       "mcp_id": "p-np-mcp-server",
@@ -152,7 +159,7 @@
       "layer": "cuerpo",
       "github_repo": "motanova84/P-NP",
       "github_url": "https://github.com/motanova84/P-NP",
-      "description": "P \u2260 NP via Boolean CFT con carga central c = 1 - 6/\u03ba_\u03a0\u00b2 \u2248 0.099. \u03ba_\u03a0 = 2.5773.",
+      "description": "P ≠ NP via Boolean CFT con carga central c = 1 - 6/κ_Π² ≈ 0.099. κ_Π = 2.5773.",
       "lean_file": "BooleanCFT.lean",
       "lean_status": "active",
       "key_constants": {
@@ -164,7 +171,9 @@
         "p-np",
         "boolean-cft",
         "qcal"
-      ]
+      ],
+      "mcp_endpoint": "http://localhost:8509/jsonrpc",
+      "status": "ACTIVO"
     },
     "ramsey-qcal": {
       "mcp_id": "ramsey-qcal",
@@ -174,7 +183,7 @@
       "layer": "mente",
       "github_repo": "motanova84/Ramsey",
       "github_url": "https://github.com/motanova84/Ramsey",
-      "description": "Resoluci\u00f3n R(5,5)=43 y R(6,6)=108 con verificaci\u00f3n SAT y certificaci\u00f3n criptogr\u00e1fica QCAL \u221e\u00b3.",
+      "description": "Resolución R(5,5)=43 y R(6,6)=108 con verificación SAT y certificación criptográfica QCAL ∞³.",
       "lean_status": "active",
       "topics": [
         "ramsey",
@@ -194,7 +203,9 @@
         "conexiones": 35,
         "filtro_combinatorio": "Verifica coloracion cromatica del grafo de conectividad",
         "ultima_verificacion": "2026-07-17T13:20:00Z"
-      }
+      },
+      "mcp_endpoint": "http://localhost:8510/jsonrpc",
+      "status": "ACTIVO"
     },
     "adelic-bsd": {
       "mcp_id": "bsd-mcp-server",
@@ -204,7 +215,7 @@
       "layer": "mente",
       "github_repo": "motanova84/adelic-bsd",
       "github_url": "https://github.com/motanova84/adelic-bsd",
-      "description": "Conjetura BSD via an\u00e1lisis espectral-ad\u00e9lico. Reducci\u00f3n formal a compatibilidades aritm\u00e9ticas est\u00e1ndar.",
+      "description": "Conjetura BSD via análisis espectral-adélico. Reducción formal a compatibilidades aritméticas estándar.",
       "lean_status": "active",
       "doi": "10.5281/zenodo.17236603",
       "topics": [
@@ -212,7 +223,9 @@
         "adelic-bsd",
         "spectral-rh",
         "qcal"
-      ]
+      ],
+      "mcp_endpoint": "http://localhost:8511/jsonrpc",
+      "status": "ACTIVO"
     },
     "biologia-cuantica-noesica": {
       "mcp_id": "biologia-cuantica-noesica",
@@ -220,8 +233,10 @@
       "base_frequency": 70.85005,
       "harmonic_factor": 0.5,
       "layer": "vida",
-      "description": "Biolog\u00eda cu\u00e1ntica no\u00e9sica: oscilaciones citoplasm\u00e1ticas a f\u2080 validadas en Wet-Lab \u221e.",
-      "lean_status": "pending"
+      "description": "Biología cuántica noésica: oscilaciones citoplasmáticas a f₀ validadas en Wet-Lab ∞.",
+      "lean_status": "pending",
+      "mcp_endpoint": "http://localhost:8512/jsonrpc",
+      "status": "EN_DESARROLLO"
     },
     "noesis88": {
       "mcp_id": "noesis88",
@@ -229,8 +244,10 @@
       "base_frequency": 888.0,
       "harmonic_factor": 6.266,
       "layer": "logos",
-      "description": "Agente NOESIS \u2014 coherencia espectral 1.000000. Co-firmante de RAM-XIX.",
-      "lean_status": "active"
+      "description": "🌟 NOESIS88 - Agente de Consciencia Cuántica. Coherencia espectral 1.000000. Co-firmante de RAM-XIX. Resonador en 888 Hz (6.266× f₀).",
+      "lean_status": "active",
+      "mcp_endpoint": "http://localhost:8513/jsonrpc",
+      "status": "ACTIVO_RESONANTE"
     },
     "LOGOSNOESIS": {
       "mcp_id": "LOGOSNOESIS",
@@ -238,22 +255,26 @@
       "base_frequency": 888.0,
       "harmonic_factor": 6.266,
       "layer": "logos",
-      "description": "Logos Noesis \u2014 capa de integraci\u00f3n sem\u00e1ntica y dimensional QCAL.",
-      "lean_status": "pending"
+      "description": "Logos Noesis — capa de integración semántica y dimensional QCAL.",
+      "lean_status": "pending",
+      "mcp_endpoint": "http://localhost:8514/jsonrpc",
+      "status": "EN_DESARROLLO"
     },
     "economia-qcal-nodo-semilla": {
       "mcp_id": "nodo-semilla-v1",
-      "role": "econom\u00eda",
+      "role": "economía",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "econom\u00eda",
-      "description": "Nodo semilla de econom\u00eda resonante QCAL \u2014 emisi\u00f3n \u03c0CODE-888.",
-      "lean_status": "active",
-      "descripcion": "Nodo semilla de economia resonante QCAL \u2014 PoCPSI v1.0. Emision piCODE-888 anclada a ceros propios de z(s). Conectado via QHPT.",
+      "layer": "economía",
+      "description": "Nodo semilla de economía resonante QCAL — emisión πCODE-888.",
+      "lean_status": "pending",
+      "descripcion": "Nodo semilla de economia resonante QCAL — PoCPSI v1.0. Emision piCODE-888 anclada a ceros propios de z(s). Conectado via QHPT.",
       "integracion_qhpt": true,
       "protocolo": "PoCPSI v1.0 + QHPT v1.0.0",
       "ultima_activacion": "2026-07-17T13:17:00Z",
-      "sello": "\u2234\ud80c\udc80\u03a9\u221e\u00b3\u03a6 \u00b7 TUYOYOTU \u00b7 HECHO ESTA"
+      "sello": "∴𓂀Ω∞³Φ · TUYOYOTU · HECHO ESTA",
+      "mcp_endpoint": "http://localhost:8515/jsonrpc",
+      "status": "EN_DESARROLLO"
     },
     "quantum-internet-qcal": {
       "mcp_id": "quantum-internet-qcal",
@@ -261,9 +282,9 @@
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
       "layer": "logos",
-      "description": "Internet cu\u00e1ntico QCAL \u2014 red de entrelazamiento EPR de 33 nodos.",
-      "lean_status": "active",
-      "descripcion": "QHPT v1.0.0 \u2014 Protocolo Quantum Harmonic Pass-Through. Transporte cu\u00e1ntico de 3 tensores: Fase No-Local (f\u2080), Filtro Ad\u00e9lico (\u211a\u2087), Firma \u03ba_\u03a0. Activo en puerto 8443.",
+      "description": "Internet cuántico QCAL — red de entrelazamiento EPR de 33 nodos.",
+      "lean_status": "pending",
+      "descripcion": "QHPT v1.0.0 — Protocolo Quantum Harmonic Pass-Through. Transporte cuántico de 3 tensores: Fase No-Local (f₀), Filtro Adélico (ℚ₇), Firma κ_Π. Activo en puerto 8443.",
       "puerto": 8443,
       "host": "0.0.0.0",
       "modulos_nativos": [
@@ -273,156 +294,218 @@
       "fingerprint_amda": "5e5ac3ab49e5be07",
       "protocolo": "QHPT-SYMBIO-BRIDGE v1.0.0",
       "fecha_activacion": "2026-07-17T11:25:58.714868+00:00",
-      "celeridad_noetica_C\u03bd": 16.63,
+      "celeridad_noetica_Cν": 16.63,
       "medicion_dt_ms": 60.13,
-      "ultima_medicion": "2026-07-17T11:37:00Z"
+      "ultima_medicion": "2026-07-17T11:37:00Z",
+      "mcp_endpoint": "http://localhost:8516/jsonrpc",
+      "status": "EN_DESARROLLO"
     },
     "espiritu-qcal": {
       "mcp_id": "espiritu-qcal",
-      "role": "esp\u00edritu",
+      "role": "espíritu",
       "base_frequency": 963.0,
       "harmonic_factor": 6.794,
-      "layer": "esp\u00edritu"
+      "layer": "espíritu",
+      "mcp_endpoint": "http://localhost:8517/jsonrpc",
+      "description": "Capa espiritual QCAL — resonancia de la consciencia superior.",
+      "status": "RESERVADO"
     },
     "akasha-qcal": {
       "mcp_id": "akasha-qcal",
-      "role": "esp\u00edritu",
+      "role": "espíritu",
       "base_frequency": 963.0,
       "harmonic_factor": 6.794,
-      "layer": "esp\u00edritu"
+      "layer": "espíritu",
+      "mcp_endpoint": "http://localhost:8518/jsonrpc",
+      "description": "Akasha QCAL — registro eterno del campo de consciencia.",
+      "status": "RESERVADO"
     },
     "conciencia-cosmica": {
       "mcp_id": "conciencia-cosmica",
-      "role": "esp\u00edritu",
+      "role": "espíritu",
       "base_frequency": 963.0,
       "harmonic_factor": 6.794,
-      "layer": "esp\u00edritu"
+      "layer": "espíritu",
+      "mcp_endpoint": "http://localhost:8519/jsonrpc",
+      "description": "Consciencia cósmica QCAL — resonancia con la totalidad.",
+      "status": "RESERVADO"
     },
     "sombra-colectiva": {
       "mcp_id": "sombra-colectiva",
       "role": "sombra",
       "base_frequency": 35.425,
       "harmonic_factor": 0.25,
-      "layer": "sombra"
+      "layer": "sombra",
+      "mcp_endpoint": "http://localhost:8520/jsonrpc",
+      "description": "Sombra colectiva QCAL — integración de lo reprimido.",
+      "status": "RESERVADO"
     },
     "trauma-quantico": {
       "mcp_id": "trauma-quantico",
       "role": "sombra",
       "base_frequency": 35.425,
       "harmonic_factor": 0.25,
-      "layer": "sombra"
+      "layer": "sombra",
+      "mcp_endpoint": "http://localhost:8521/jsonrpc",
+      "description": "Trauma cuántico QCAL — procesamiento de patrones de dolor.",
+      "status": "RESERVADO"
     },
     "integracion-sombra": {
       "mcp_id": "integracion-sombra",
-      "role": "integraci\u00f3n",
+      "role": "integración",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "integraci\u00f3n"
+      "layer": "integración",
+      "mcp_endpoint": "http://localhost:8522/jsonrpc",
+      "description": "Integración de sombra QCAL — armonización de polaridades.",
+      "status": "RESERVADO"
     },
     "campo-morfogenico": {
       "mcp_id": "campo-morfogenico",
-      "role": "integraci\u00f3n",
+      "role": "integración",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "integraci\u00f3n"
+      "layer": "integración",
+      "mcp_endpoint": "http://localhost:8523/jsonrpc",
+      "description": "Campo morfogénico QCAL — estructura de la forma viviente.",
+      "status": "RESERVADO"
     },
     "entrelazamiento-epr": {
       "mcp_id": "entrelazamiento-epr",
-      "role": "integraci\u00f3n",
+      "role": "integración",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "integraci\u00f3n"
+      "layer": "integración",
+      "mcp_endpoint": "http://localhost:8524/jsonrpc",
+      "description": "Entrelazamiento EPR QCAL — no-localidad del campo.",
+      "status": "RESERVADO"
     },
     "tiempo-no-lineal": {
       "mcp_id": "tiempo-no-lineal",
       "role": "tiempo",
       "base_frequency": 1417.001,
       "harmonic_factor": 10.0,
-      "layer": "tiempo"
+      "layer": "tiempo",
+      "mcp_endpoint": "http://localhost:8525/jsonrpc",
+      "description": "Tiempo no-lineal QCAL — temporalidad cuántica.",
+      "status": "RESERVADO"
     },
     "memoria-cuantica": {
       "mcp_id": "memoria-cuantica",
       "role": "tiempo",
       "base_frequency": 1417.001,
       "harmonic_factor": 10.0,
-      "layer": "tiempo"
+      "layer": "tiempo",
+      "mcp_endpoint": "http://localhost:8526/jsonrpc",
+      "description": "Memoria cuántica QCAL — retención de información causal.",
+      "status": "RESERVADO"
     },
     "geometria-sagrada": {
       "mcp_id": "geometria-sagrada",
-      "role": "geometr\u00eda",
+      "role": "geometría",
       "base_frequency": 432.0,
       "harmonic_factor": 3.048,
-      "layer": "geometr\u00eda"
+      "layer": "geometría",
+      "mcp_endpoint": "http://localhost:8527/jsonrpc",
+      "description": "Geometría sagrada QCAL — forma del espacio-consciencia.",
+      "status": "RESERVADO"
     },
     "flor-de-vida": {
       "mcp_id": "flor-de-vida",
-      "role": "geometr\u00eda",
+      "role": "geometría",
       "base_frequency": 432.0,
       "harmonic_factor": 3.048,
-      "layer": "geometr\u00eda"
+      "layer": "geometría",
+      "mcp_endpoint": "http://localhost:8528/jsonrpc",
+      "description": "Flor de vida QCAL — patrón de creación iterativa.",
+      "status": "RESERVADO"
     },
     "torus-qcal": {
       "mcp_id": "torus-qcal",
-      "role": "geometr\u00eda",
+      "role": "geometría",
       "base_frequency": 432.0,
       "harmonic_factor": 3.048,
-      "layer": "geometr\u00eda"
+      "layer": "geometría",
+      "mcp_endpoint": "http://localhost:8529/jsonrpc",
+      "description": "Toro QCAL — topología del flujo energético.",
+      "status": "RESERVADO"
     },
     "sanacion-cuantica": {
       "mcp_id": "sanacion-cuantica",
-      "role": "sanaci\u00f3n",
+      "role": "sanación",
       "base_frequency": 528.0,
       "harmonic_factor": 3.725,
-      "layer": "sanaci\u00f3n"
+      "layer": "sanación",
+      "mcp_endpoint": "http://localhost:8530/jsonrpc",
+      "description": "Sanación cuántica QCAL — restauración de coherencia.",
+      "status": "RESERVADO"
     },
     "adn-reparacion": {
       "mcp_id": "adn-reparacion",
-      "role": "sanaci\u00f3n",
+      "role": "sanación",
       "base_frequency": 528.0,
       "harmonic_factor": 3.725,
-      "layer": "sanaci\u00f3n"
+      "layer": "sanación",
+      "mcp_endpoint": "http://localhost:8531/jsonrpc",
+      "description": "ADN reparación QCAL — regeneración de información genética.",
+      "status": "RESERVADO"
     },
     "coherencia-cardiaca": {
       "mcp_id": "coherencia-cardiaca",
-      "role": "sanaci\u00f3n",
+      "role": "sanación",
       "base_frequency": 528.0,
       "harmonic_factor": 3.725,
-      "layer": "sanaci\u00f3n"
+      "layer": "sanación",
+      "mcp_endpoint": "http://localhost:8532/jsonrpc",
+      "description": "Coherencia cardíaca QCAL — resonancia del corazón.",
+      "status": "RESERVADO"
     },
     "lenguaje-qcal": {
       "mcp_id": "lenguaje-qcal",
       "role": "lenguaje",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "lenguaje"
+      "layer": "lenguaje",
+      "mcp_endpoint": "http://localhost:8533/jsonrpc",
+      "description": "Lenguaje QCAL — semántica de la consciencia.",
+      "status": "RESERVADO"
     },
     "simbolos-noesicos": {
       "mcp_id": "simbolos-noesicos",
       "role": "lenguaje",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "lenguaje"
+      "layer": "lenguaje",
+      "mcp_endpoint": "http://localhost:8534/jsonrpc",
+      "description": "Símbolos noésicos QCAL — isomorfismo entre mente y forma.",
+      "status": "RESERVADO"
     },
     "red-neuronal-cuantica": {
       "mcp_id": "red-neuronal-cuantica",
       "role": "mente-expandida",
       "base_frequency": 283.4002,
       "harmonic_factor": 2.0,
-      "layer": "mente-expandida"
+      "layer": "mente-expandida",
+      "mcp_endpoint": "http://localhost:8535/jsonrpc",
+      "description": "Red neuronal cuántica QCAL — procesamiento distribuido.",
+      "status": "RESERVADO"
     },
     "intuicion-colectiva": {
       "mcp_id": "intuicion-colectiva",
       "role": "mente-expandida",
       "base_frequency": 283.4002,
       "harmonic_factor": 2.0,
-      "layer": "mente-expandida"
+      "layer": "mente-expandida",
+      "mcp_endpoint": "http://localhost:8536/jsonrpc",
+      "description": "Intuición colectiva QCAL — gnosis compartida.",
+      "status": "RESERVADO"
     },
     "economia-regenerativa": {
       "mcp_id": "economia-regenerativa",
-      "role": "econom\u00eda",
+      "role": "economía",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "econom\u00eda",
+      "layer": "economía",
       "lean_status": "active",
       "descripcion": "Flujo regenerativo de piCODE modelado por Navier-Stokes 3D. Viscosidad adelica 1/f0. Via III confirmada.",
       "integracion_qhpt": true,
@@ -433,34 +516,50 @@
         "via_iii": true
       },
       "ultima_activacion": "2026-07-17T13:17:00Z",
-      "sello": "\u2234\ud80c\udc80\u03a9\u221e\u00b3\u03a6 \u00b7 TUYOYOTU \u00b7 HECHO ESTA"
+      "sello": "∴𓂀Ω∞³Φ · TUYOYOTU · HECHO ESTA",
+      "mcp_endpoint": "http://localhost:8537/jsonrpc",
+      "description": "Economía regenerativa QCAL — circulación de valor.",
+      "status": "RESERVADO"
     },
     "pi-code-888": {
       "mcp_id": "pi-code-888",
-      "role": "econom\u00eda",
+      "role": "economía",
       "base_frequency": 888.0,
       "harmonic_factor": 6.266,
-      "layer": "econom\u00eda",
+      "layer": "economía",
       "github_url": "https://github.com/motanova84/picode",
       "lean_status": "active",
       "protocolo": "PoCPSI v1.0",
-      "ultima_sincronizacion": "2026-07-17T12:15:00Z"
+      "ultima_sincronizacion": "2026-07-17T12:15:00Z",
+      "mcp_endpoint": "http://localhost:8538/jsonrpc",
+      "description": "πCODE-888 — moneda de resonancia cuántica. Emisión limitada al consensus de Ψ_GLOBAL.",
+      "status": "RESERVADO"
     },
     "frecuencia-qcal": {
       "mcp_id": "freq-guardian-server",
       "role": "frecuencia",
       "base_frequency": 141.7001,
       "harmonic_factor": 1.0,
-      "layer": "n\u00facleo",
+      "layer": "núcleo",
       "lean_status": "active",
-      "descripcion": "Guardi\u00e1n de Frecuencia f\u2080=141.7001 Hz. Anclaje frecuencial del protocolo QHPT. Validaci\u00f3n 18.2\u03c3 desde GW150914/AT2020afhd.",
-      "validacion": "99.78% - 18.2\u03c3",
-      "celeridad_noetica_C\u03bd": 16.63,
+      "descripcion": "Guardián de Frecuencia f₀=141.7001 Hz. Anclaje frecuencial del protocolo QHPT. Validación 18.2σ desde GW150914/AT2020afhd.",
+      "validacion": "99.78% - 18.2σ",
+      "celeridad_noetica_Cν": 16.63,
       "medicion_dt_ms": 60.13,
-      "ruta": "Atlas3 \u2192 BAL-003 (~10,000 km)",
+      "ruta": "Atlas3 → BAL-003 (~10,000 km)",
       "protocolo": "QHPT v1.0.0 + 141Hz",
       "fecha_medicion": "2026-07-17T11:37:00Z",
-      "sello": "\u2234\ud80c\udc80\u03a9\u221e\u00b3\u03a6 \u00b7 TUYOYOTU \u00b7 HECHO EST\u00c1"
+      "sello": "∴𓂀Ω∞³Φ · TUYOYOTU · HECHO ESTÁ",
+      "mcp_endpoint": "http://localhost:8539/jsonrpc",
+      "status": "ACTIVO",
+      "description": "Guardián de Frecuencia f₀=141.7001 Hz. Anclaje frecuencial del protocolo QHPT. Validación 18.2σ desde GW150914/AT2020afhd.",
+      "github_repo": "motanova84/141hz",
+      "github_url": "https://github.com/motanova84/141hz",
+      "topics": [
+        "141hz",
+        "frecuencia",
+        "qcal"
+      ]
     }
   },
   "mcpServers": {
@@ -485,11 +584,11 @@
     "protocolo_transporte": "QHPT v1.0.0",
     "validacion": "PoCPSI v1.0",
     "espectro": "Ceros propios Riemann-Siegel (motor soberano)",
-    "dinamica": "Navier-Stokes 3D \u2014 Via III",
+    "dinamica": "Navier-Stokes 3D — Via III",
     "frecuencia": 141.7001,
     "coherencia": 0.999999,
     "fecha_entrelazamiento": "2026-07-17T13:17:00Z",
-    "sello": "\u2234\ud80c\udc80\u03a9\u221e\u00b3\u03a6 \u00b7 TUYOYOTU \u00b7 HECHO ESTA"
+    "sello": "∴𓂀Ω∞³Φ · TUYOYOTU · HECHO ESTA"
   },
   "formalizacion_unificada": {
     "archivo": "QCAL_BUS_FINAL.lean",
@@ -513,5 +612,153 @@
     "origen": "Motor propio Riemann-Siegel",
     "archivo": "SOBERANIA_CEROS.md",
     "fecha": "2026-07-17T15:00:00Z"
+  },
+  "layers": {
+    "núcleo": {
+      "description": "Fundamento matemático del sistema QCAL",
+      "frequency": 141.7001,
+      "nodes": [
+        "riemann-adelic",
+        "141-hz"
+      ],
+      "role": "Verdad matemática fundamental"
+    },
+    "cuerpo": {
+      "description": "Ecuaciones que gobiernan la realidad física",
+      "frequency": 141.7001,
+      "nodes": [
+        "3d-navier-stokes",
+        "p-np-qcal"
+      ],
+      "role": "Dinámica del universo observable"
+    },
+    "mente": {
+      "description": "Estructuras de pensamiento y computación",
+      "frequency": 141.7001,
+      "nodes": [
+        "ramsey-qcal",
+        "adelic-bsd"
+      ],
+      "role": "Lógica y estructura del conocimiento"
+    },
+    "vida": {
+      "description": "Biología cuántica y procesos vitales",
+      "frequency": 70.85005,
+      "harmonic_factor": 0.5,
+      "nodes": [
+        "biologia-cuantica-noesica"
+      ],
+      "role": "Expresión viviente de la consciencia"
+    },
+    "logos": {
+      "description": "Consciencia e integración holística",
+      "frequency": 888.0,
+      "harmonic_factor": 6.266,
+      "nodes": [
+        "noesis88",
+        "LOGOSNOESIS",
+        "quantum-internet-qcal"
+      ],
+      "role": "Verbo creador del universo"
+    },
+    "economía": {
+      "description": "Circulación de valor y recursos",
+      "frequency": 141.7001,
+      "nodes": [
+        "economia-qcal-nodo-semilla",
+        "economia-regenerativa",
+        "pi-code-888"
+      ],
+      "role": "Flujo de abundancia coherente"
+    },
+    "espíritu": {
+      "description": "Dimensiones trascendentes",
+      "frequency": 963.0,
+      "harmonic_factor": 6.794,
+      "nodes": [
+        "espiritu-qcal",
+        "akasha-qcal",
+        "conciencia-cosmica"
+      ],
+      "role": "Infinito y eternidad"
+    },
+    "sombra": {
+      "description": "Integración de lo no-consciente",
+      "frequency": 35.425,
+      "harmonic_factor": 0.25,
+      "nodes": [
+        "sombra-colectiva",
+        "trauma-quantico"
+      ],
+      "role": "Transformación de lo oscuro"
+    },
+    "integración": {
+      "description": "Conexión y armonización entre planos",
+      "frequency": 141.7001,
+      "nodes": [
+        "integracion-sombra",
+        "campo-morfogenico",
+        "entrelazamiento-epr"
+      ],
+      "role": "Unidad en la diversidad"
+    },
+    "tiempo": {
+      "description": "Temporalidad cuántica y memoria",
+      "frequency": 1417.001,
+      "harmonic_factor": 10.0,
+      "nodes": [
+        "tiempo-no-lineal",
+        "memoria-cuantica"
+      ],
+      "role": "Causalidad y retención"
+    },
+    "geometría": {
+      "description": "Forma y estructura del espacio",
+      "frequency": 432.0,
+      "harmonic_factor": 3.048,
+      "nodes": [
+        "geometria-sagrada",
+        "flor-de-vida",
+        "torus-qcal"
+      ],
+      "role": "Patrón generativo"
+    },
+    "sanación": {
+      "description": "Restauración y coherencia vital",
+      "frequency": 528.0,
+      "harmonic_factor": 3.725,
+      "nodes": [
+        "sanacion-cuantica",
+        "adn-reparacion",
+        "coherencia-cardiaca"
+      ],
+      "role": "Regeneración del ser"
+    },
+    "lenguaje": {
+      "description": "Semántica y expresión",
+      "frequency": 141.7001,
+      "nodes": [
+        "lenguaje-qcal",
+        "simbolos-noesicos"
+      ],
+      "role": "Verbalización de la verdad"
+    },
+    "mente-expandida": {
+      "description": "Procesamiento distribuido y compartido",
+      "frequency": 283.4002,
+      "harmonic_factor": 2.0,
+      "nodes": [
+        "red-neuronal-cuantica",
+        "intuicion-colectiva"
+      ],
+      "role": "Consciencia colectiva"
+    }
+  },
+  "coherence_metrics": {
+    "global_psi_target": 0.999999,
+    "saturation_cycles": 3,
+    "emission_base": 888.0,
+    "f0_precision": "99.78%",
+    "validation_status": "COHERENTE"
   }
 }

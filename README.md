@@ -212,18 +212,40 @@ pip install flask
 cp .env.example .env
 
 # 3. Lanzar Bus de sincronía continua
-python qcal_mesh_sync.py
+python scripts/activate_qcal_resonance.py
 
 # 4. Lanzar Dashboard (en otra terminal)
 python dashboard/malla_qcal_epr.py
-# → http://localhost:8505
+# → http://localhost:5000
+
+# 5. Validar bridge MCP (opcional)
+python scripts/mcp_client_test.py --transport stdio
 ```
 Rutas disponibles:
-- `http://localhost:8505/` — Dashboard visual
-- `http://localhost:8505/api/mesh_state` — Estado JSON
-- `http://localhost:8505/api/node_catalog` — Catálogo JSON
-- `http://localhost:8505/api/emissions_log` — Ledger JSON
-- `http://localhost:8505/api/mcp` (POST) — Endpoint HTTP MCP JSON-RPC
+- `http://localhost:5000/` — Dashboard visual
+- `http://localhost:5000/api/mesh_state` — Estado JSON
+- `http://localhost:5000/api/node_catalog` — Catálogo JSON
+- `http://localhost:5000/api/emissions_log` — Ledger JSON
+- `http://localhost:5000/api/mcp` (POST) — Endpoint HTTP MCP JSON-RPC
+
+### FASE 4 — Activación operacional
+```bash
+# Monitor continuo de Ψ_GLOBAL (60s por defecto, loop infinito)
+python scripts/activate_qcal_resonance.py
+
+# Orquestación rápida por modo
+bash scripts/phase_4_activation.sh monitor
+bash scripts/phase_4_activation.sh dashboard
+bash scripts/phase_4_activation.sh mcp
+bash scripts/phase_4_activation.sh validate --transport stdio
+```
+
+Validaciones pre-operacionales incluidas:
+- integridad de `registry/NODE_CATALOG.json`
+- disponibilidad de `ledger/emissions_log.csv`
+- verificación de herramientas MCP expuestas
+- health check inicial de los 33 nodos
+- snapshot de `Ψ_GLOBAL`, coherencia y racha de saturación
 
 ## Configuración
 

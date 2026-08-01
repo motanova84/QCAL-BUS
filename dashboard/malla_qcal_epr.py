@@ -1,6 +1,7 @@
 from pathlib import Path
-import sys
+import os
 import json
+import sys
 
 from flask import Flask, jsonify, render_template_string
 
@@ -12,6 +13,8 @@ from qcal_mesh_sync import monitor_global_resonance, load_catalog, read_emission
 from qcal_mesh_sync import sync_mesh_with_real_sources  # noqa: E402
 
 app = Flask(__name__)
+DASHBOARD_HOST = os.getenv("QCAL_DASHBOARD_HOST", "127.0.0.1")
+DASHBOARD_PORT = int(os.getenv("QCAL_DASHBOARD_PORT", "5000"))
 
 HTML_TEMPLATE = """
 <!doctype html>
@@ -189,5 +192,5 @@ def mcp_endpoint():
 
 
 if __name__ == "__main__":
-    print("Dashboard local activo en http://127.0.0.1:8505 (servidor Flask de desarrollo)")
-    app.run(host="127.0.0.1", port=8505, debug=False)
+    print(f"Dashboard local activo en http://{DASHBOARD_HOST}:{DASHBOARD_PORT} (servidor Flask de desarrollo)")
+    app.run(host=DASHBOARD_HOST, port=DASHBOARD_PORT, debug=False)
