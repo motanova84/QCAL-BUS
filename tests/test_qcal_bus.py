@@ -22,6 +22,7 @@ os.environ.setdefault("QCAL_REAL_TESTS", "0")
 
 import mcp_network.resonance as resonance
 import qcal_mesh_sync as bus
+from dashboard import malla_qcal_epr as dashboard
 
 
 # ---------------------------------------------------------------------------
@@ -73,6 +74,12 @@ class TestResonance:
 # ---------------------------------------------------------------------------
 
 class TestMeshSyncHelpers:
+    def test_catalog_path_points_to_registry(self):
+        assert bus.CATALOG_PATH == bus.ROOT_DIR / "registry" / "NODE_CATALOG.json"
+
+    def test_legacy_catalog_removed(self):
+        assert not (bus.ROOT_DIR / "registro" / "NODE_CATALOG.json").exists()
+
     def test_load_catalog(self):
         catalog = bus.load_catalog()
         assert "meta" in catalog
@@ -115,6 +122,50 @@ class TestMeshSyncHelpers:
         rows = bus.read_emissions_log(tail=3)
         assert len(rows) == 3
 
+    def test_validate_catalog_integrity(self):
+        report = bus.validate_catalog_integrity()
+        assert report["ok"] is True
+        assert report["total_nodes"] == bus.load_catalog()["meta"]["total_nodes"]
+        assert report["missing_endpoints"] == []
+
+    def test_run_preflight_checks(self):
+        report = bus.run_preflight_checks()
+        assert report["catalog"]["ok"] is True
+        assert report["ledger"]["ok"] is True
+        assert report["mcp"]["bridge_path"] == "/api/mcp"
+        assert report["health"]["total_nodes"] == bus.load_catalog()["meta"]["total_nodes"]
+
+    def test_run_preflight_checks_does_not_advance_streak_or_emit(self, tmp_path, monkeypatch):
+        ledger = tmp_path / "ledger" / "emissions_log.csv"
+        monkeypatch.setattr(bus, "LEDGER_PATH", ledger)
+        monkeypatch.setattr(
+            bus,
+            "check_node_resonance",
+            lambda _mcp_id: {
+                "psi": 1.0,
+                "resonance": "COHERENCIA_TOTAL",
+                "qcal": {"modo_real": False},
+            },
+        )
+        monkeypatch.setitem(bus._STATE, "saturation_streak", 0)
+
+        report = bus.run_preflight_checks()
+
+        assert report["mesh_state"]["global_psi"] == 1.0
+        assert bus._STATE["saturation_streak"] == 0
+        assert bus.read_emissions_log(tail=10) == []
+
+    def test_run_monitor_loop_iterations(self, monkeypatch):
+        calls = []
+
+        def fake_monitor(verbose=True):
+            calls.append(verbose)
+            return {"status": "DRIFTING"}
+
+        monkeypatch.setattr(bus, "monitor_global_resonance", fake_monitor)
+        bus.run_monitor_loop(iterations=2, interval_seconds=0, verbose=False)
+        assert calls == [False, False]
+
 
 # ---------------------------------------------------------------------------
 # monitor_global_resonance
@@ -130,9 +181,9 @@ class TestMonitorGlobalResonance:
         result = bus.monitor_global_resonance(verbose=False)
         assert 0.0 <= result["global_psi"] <= 1.0
 
-    def test_all_33_nodes_present(self):
+    def test_all_catalog_nodes_present(self):
         result = bus.monitor_global_resonance(verbose=False)
-        assert len(result["nodes"]) == 33
+        assert len(result["nodes"]) == bus.load_catalog()["meta"]["total_nodes"]
 
 
 # ---------------------------------------------------------------------------
@@ -202,3 +253,19 @@ class TestMCPServer:
         resp = json.loads(captured.out.strip())
         names = [t["name"] for t in resp["result"]["tools"]]
         assert "get_mesh_state" in names
+
+
+class TestDashboard:
+    def test_mesh_state_endpoint(self, monkeypatch):
+        monkeypatch.setattr(dashboard, "sync_mesh_with_real_sources", lambda: {"global_psi": 1.0, "status": "OK", "nodes": {}})
+        client = dashboard.app.test_client()
+        resp = client.get("/api/mesh_state")
+        assert resp.status_code == 200
+        assert resp.get_json()["global_psi"] == 1.0
+
+    def test_mcp_endpoint(self):
+        client = dashboard.app.test_client()
+        resp = client.post("/api/mcp", json={"jsonrpc": "2.0", "id": 1, "method": "tools/list", "params": {}})
+        assert resp.status_code == 200
+        body = resp.get_json()
+        assert body["result"]["tools"]

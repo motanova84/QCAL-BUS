@@ -29,7 +29,6 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-import mcp_network.resonance as qcal  # siempre disponible dentro del repo
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("QCAL-BUS")
 
@@ -48,11 +47,11 @@ GLOBAL_THRESHOLD = float(os.getenv("QCAL_GLOBAL_THRESHOLD", "0.999999"))
 SATURATION_CYCLES = int(os.getenv("QCAL_SATURATION_CYCLES", "3"))
 SYNC_INTERVAL_SECONDS = int(os.getenv("QCAL_SYNC_INTERVAL_SECONDS", "60"))
 LEDGER_TAIL_DEFAULT = int(os.getenv("QCAL_LEDGER_TAIL", "50"))
-BASE_RESONANCE_FREQUENCY = 141.7001  # Hz — frecuencia fundamental de la malla QCAL-EPR
 
 _STATE = {"saturation_streak": 0}
 _STREAK_LOCK = threading.Lock()
 OFFLINE_ERROR_TRUNCATE = 120
+BASE_RESONANCE_FREQUENCY = 141.7001  # Hz — frecuencia fundamental de la malla QCAL-EPR
 
 
 # ---------------------------------------------------------------------------
@@ -144,12 +143,112 @@ def read_emissions_log(tail: int = LEDGER_TAIL_DEFAULT) -> list[dict]:
     return rows[-tail:] if tail > 0 else rows
 
 
+def validate_catalog_integrity(catalog: dict | None = None) -> dict:
+    """Valida integridad estructural y operativa mínima del catálogo."""
+    catalog = catalog or load_catalog()
+    meta = catalog.get("meta", {})
+    nodes = catalog.get("nodes", {})
+    issues = []
+
+    if not isinstance(nodes, dict):
+        issues.append("nodes debe ser un objeto JSON")
+        nodes = {}
+
+    total_nodes = len(nodes)
+    expected_nodes = meta.get("total_nodes")
+    if expected_nodes is not None and expected_nodes != total_nodes:
+        issues.append(
+            f"meta.total_nodes={expected_nodes} no coincide con nodes={total_nodes}"
+        )
+
+    missing_endpoints = sorted(
+        node_name
+        for node_name, info in nodes.items()
+        if not info.get("mcp_endpoint")
+    )
+    if missing_endpoints:
+        issues.append(f"Nodos sin mcp_endpoint: {', '.join(missing_endpoints)}")
+
+    noesis_endpoint = nodes.get("noesis88", {}).get("mcp_endpoint")
+    if noesis_endpoint != "http://localhost:8513/jsonrpc":
+        issues.append("noesis88 debe apuntar a http://localhost:8513/jsonrpc")
+
+    return {
+        "ok": not issues,
+        "issues": issues,
+        "total_nodes": total_nodes,
+        "expected_nodes": expected_nodes,
+        "missing_endpoints": missing_endpoints,
+        "catalog_path": str(CATALOG_PATH),
+    }
+
+
+def run_preflight_checks() -> dict:
+    """Ejecuta validaciones pre-operacionales para FASE 4."""
+    catalog = load_catalog()
+    catalog_report = validate_catalog_integrity(catalog)
+    ensure_ledger()
+    mesh_state = sync_mesh_with_real_sources()
+    nodes = mesh_state.get("nodes", {}) if isinstance(mesh_state.get("nodes", {}), dict) else {}
+    offline_nodes = sorted(
+        node_name
+        for node_name, info in nodes.items()
+        if info.get("resonance") == "OFFLINE"
+    )
+
+    return {
+        "catalog": catalog_report,
+        "ledger": {
+            "ok": LEDGER_PATH.exists(),
+            "path": str(LEDGER_PATH),
+        },
+        "mcp": {
+            "ok": True,
+            "bridge_path": "/api/mcp",
+            "tools": sorted(_MCP_TOOLS),
+        },
+        "health": {
+            "ok": catalog_report["ok"],
+            "total_nodes": len(nodes),
+            "offline_nodes": offline_nodes,
+            "online_nodes": max(0, len(nodes) - len(offline_nodes)),
+        },
+        "mesh_state": mesh_state,
+    }
+
+
+def run_monitor_loop(
+    iterations: int | None = None,
+    interval_seconds: int | None = None,
+    verbose: bool = True,
+) -> None:
+    """Ejecuta el monitor de resonancia en loop continuo o acotado."""
+    interval = SYNC_INTERVAL_SECONDS if interval_seconds is None else interval_seconds
+    cycle = 0
+
+    while iterations is None or cycle < iterations:
+        try:
+            monitor_global_resonance(verbose=verbose)
+        except Exception as exc:  # pragma: no cover
+            print(f"⚠️ Error en ciclo de sincronía: {exc}")
+
+        cycle += 1
+        if iterations is not None and cycle >= iterations:
+            break
+        time.sleep(interval)
+
+
 # ---------------------------------------------------------------------------
 # Main monitor
 # ---------------------------------------------------------------------------
 
-def monitor_global_resonance(verbose: bool = True) -> dict:
+def monitor_global_resonance(
+    verbose: bool = True,
+    update_state: bool = True,
+    allow_emission: bool = True,
+) -> dict:
     catalog = load_catalog()
+    meta = catalog.get("meta", {})
     nodes = catalog.get("nodes", {})
 
     if verbose:
@@ -201,16 +300,20 @@ def monitor_global_resonance(verbose: bool = True) -> dict:
         print(f"Ψ_GLOBAL_ECOSISTEMA = {global_psi:.8f} | UTC: {now_utc}")
 
     with _STREAK_LOCK:
-        if global_psi >= GLOBAL_THRESHOLD:
-            _STATE["saturation_streak"] += 1
-        else:
-            _STATE["saturation_streak"] = 0
+        if update_state:
+            if global_psi >= GLOBAL_THRESHOLD:
+                _STATE["saturation_streak"] += 1
+            else:
+                _STATE["saturation_streak"] = 0
 
         current_streak = _STATE["saturation_streak"]
 
     response = {
         "status": "DRIFTING",
         "global_psi": round(global_psi, 8),
+        "coherence": meta.get("coherence", "C = 244.36"),
+        "precision": meta.get("precision", "99.78%"),
+        "total_nodes": node_count,
         "nodes": node_status,
         "saturation_streak": current_streak,
         "threshold": GLOBAL_THRESHOLD,
@@ -218,7 +321,7 @@ def monitor_global_resonance(verbose: bool = True) -> dict:
         "timestamp": now_utc,
     }
 
-    if current_streak >= SATURATION_CYCLES:
+    if allow_emission and current_streak >= SATURATION_CYCLES:
         emission = append_emission(global_psi, node_status)
         response["status"] = "RESONANCIA_SATURADA"
         response["emission"] = emission
@@ -272,7 +375,7 @@ def _mcp_list_tools() -> dict:
 
 def _mcp_call_tool(name: str, arguments: dict) -> dict:
     if name == "get_mesh_state":
-        result = monitor_global_resonance(verbose=False)
+        result = sync_mesh_with_real_sources()
         return {"content": [{"type": "text", "text": json.dumps(result, ensure_ascii=False)}]}
 
     if name == "get_node_catalog":
@@ -388,70 +491,16 @@ def sync_mesh_with_real_sources():
     Sincroniza la malla completa con manejo de errores robusto y
     detección dinámica de mcp_network. Punto de entrada público del orquestador.
     """
-    logger.info("Iniciando sincronización de malla con fuentes reales...")
     try:
-        catalog = load_catalog()
+        return monitor_global_resonance(
+            verbose=False,
+            update_state=False,
+            allow_emission=False,
+        )
     except FileNotFoundError:
-        logger.error("Catálogo no encontrado. Retornando estado vacío.")
         return {"global_psi": 0.0, "status": "CATALOG_NOT_FOUND"}
     except json.JSONDecodeError:
-        logger.error("JSON mal formado en el catálogo. Retornando estado vacío.")
         return {"global_psi": 0.0, "status": "JSON_MALFORMED"}
-
-    nodes_data = catalog.get("nodes", {})
-
-    if isinstance(nodes_data, dict):
-        nodes = [
-            {
-                "id": info.get("mcp_id", repo_name),
-                "name": repo_name,
-            }
-            for repo_name, info in nodes_data.items()
-        ]
-    elif isinstance(nodes_data, list):
-        nodes = nodes_data
-    else:
-        nodes = []
-
-    print("🌀 Escaneando Malla QCAL-EPR...")
-
-    total_psi = []
-    node_results = []
-
-    for node in nodes:
-        node_id = extract_node_id(node)
-        if node_id == "unknown_node":
-            continue
-
-        try:
-            res = check_node_resonance(node_id)
-            psi = float(res.get("psi", 0.0))
-            modo_real = bool(res.get("qcal", {}).get("modo_real", False))
-            fuente_fisica = res.get("checks", {}).get("fuente_fisica", "DESCONOCIDA")
-        except Exception as exc:
-            psi = 0.0
-            modo_real = False
-            fuente_fisica = f"OFFLINE ({format_error_msg(exc)})"
-
-        status_icon = "💠" if modo_real else "🌐"
-        print(
-            f"{status_icon} Nodo: {node_id:<25} | Ψ: {psi:.6f} | Fuente: {fuente_fisica}"
-        )
-
-        total_psi.append(psi)
-        node_results.append(
-            {
-                "id": node_id,
-                "psi": round(psi, 6),
-                "modo_real": modo_real,
-                "fuente_fisica": fuente_fisica,
-            }
-        )
-
-    node_count = len(total_psi)
-    global_psi = sum(total_psi) / node_count if node_count else 0.0
-    logger.info("Sincronización completa. Ψ_GLOBAL = %.8f", global_psi)
-    return {"global_psi": round(global_psi, 8), "nodes": node_results}
 
 
 # ---------------------------------------------------------------------------
@@ -472,9 +521,4 @@ if __name__ == "__main__":
         run_mcp_server()
     else:
         # --loop or no flag → continuous monitoring loop
-        while True:
-            try:
-                monitor_global_resonance()
-            except Exception as exc:  # pragma: no cover
-                print(f"⚠️ Error en ciclo de sincronía: {exc}")
-            time.sleep(SYNC_INTERVAL_SECONDS)
+        run_monitor_loop(interval_seconds=SYNC_INTERVAL_SECONDS)
