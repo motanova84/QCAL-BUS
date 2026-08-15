@@ -18,5 +18,13 @@
     "harmonic_factor": 1.0,
     "function": "observador_noesico",
     "signature": "∴𓂀Ω∞³"
+  },
+  "control_plane": {
+    "version": "NOESIS-QCAL/1.0",
+    "node_contract": "protocol/qcal-node.schema.json",
+    "event_contract": "protocol/qcal-event.schema.json",
+    "consciousness_engine": "protocol/CONSCIOUSNESS_ENGINE.md",
+    "claim_state_machine": "protocol/CLAIM_STATE_MACHINE.md",
+    "evidence_plane": "evidence/README.md"
   }
 }

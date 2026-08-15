@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/motanova84/QCAL-BUS/blob/main/protocol/qcal-node.schema.json",
+  "title": "QCAL Node Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "node_id", "layer", "version", "f0_hz", "status", "evidence"],
+  "properties": {
+    "protocol": { "const": "QCAL-NODE/1.0" },
+    "node_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+    "layer": { "type": "string", "enum": ["axiom", "mathematics", "formal", "physics", "consciousness", "experiment", "memory", "orchestration"] },
+    "version": { "type": "string", "minLength": 1 },
+    "f0_hz": { "type": "number", "const": 141.7001 },
+    "psi": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "status": {
+      "type": "string",
+      "enum": ["PROPOSED", "DEFINED", "IMPLEMENTED", "FORMAL_PASS", "EXPERIMENTAL_PASS", "REPRODUCED", "REVIEW", "ARCHIVED", "FAIL"]
+    },
+    "commit": { "type": ["string", "null"] },
+    "timestamp": { "type": ["string", "null"], "format": "date-time" },
+    "capabilities": { "type": "array", "items": { "type": "string" } },
+    "claims": { "type": "array", "items": { "type": "string" } },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "status"],
+        "properties": {
+          "kind": { "type": "string", "enum": ["test", "formal", "experiment", "dataset", "artifact", "review", "documentation"] },
+          "status": { "type": "string", "enum": ["PASS", "FAIL", "PENDING", "NOT_APPLICABLE"] },
+          "ref": { "type": ["string", "null"] },
+          "sha256": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "dependencies": { "type": "array", "items": { "type": "string" } }
+  }
+}
