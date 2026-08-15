@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/motanova84/QCAL-BUS/blob/main/protocol/qcal-event.schema.json",
+  "title": "QCAL Event Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "event_id", "event_type", "node_id", "timestamp", "status"],
+  "properties": {
+    "protocol": { "const": "QCAL-EVENT/1.0" },
+    "event_id": { "type": "string", "minLength": 1 },
+    "event_type": { "type": "string", "enum": ["NODE_REGISTER", "HEARTBEAT", "TEST_RESULT", "FORMAL_RESULT", "EXPERIMENT_RESULT", "CHECKPOINT", "CLAIM_UPDATE", "REPRODUCTION_RESULT", "REVIEW_RESULT"] },
+    "node_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "status": { "type": "string", "enum": ["PASS", "FAIL", "PENDING", "REVIEW"] },
+    "commit": { "type": ["string", "null"] },
+    "psi": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "f0_hz": { "type": ["number", "null"], "const": 141.7001 },
+    "claim_id": { "type": ["string", "null"] },
+    "artifacts": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["path"], "properties": { "path": { "type": "string" }, "sha256": { "type": ["string", "null"] }, "media_type": { "type": ["string", "null"] } } } },
+    "evidence": { "type": "array", "items": { "type": "string" } },
+    "metadata": { "type": "object" }
+  }
+}
