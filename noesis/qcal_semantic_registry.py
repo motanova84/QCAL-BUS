@@ -49,6 +49,12 @@ REGISTRY = (
         ("motanova84/141hz", "motanova84/Riemann-adelic"), (),
         "Registry seed only; Cathedral must resolve each expression's exact context, units and domain.",
     ),
+    SemanticEntry(
+        "bal003.hardware_observer", "BAL003", "Experimental hardware and network observation node", "EXPERIMENTAL",
+        ("motanova84/141hz", "motanova84/QCAL-BUS", "motanova84/RelojCuantico-141Hz-QCAL"),
+        ("templo_core/noesis_live.py", "qcal/ARQUITECTURA_ECOSISTEMA.md", "noesis/service_registry.json"),
+        "Connectivity and telemetry are observed separately from scientific claims; discovery is read-only and registry-bound.",
+    ),
 )
 
 def build_registry() -> dict:
