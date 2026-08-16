@@ -8,13 +8,13 @@
   "properties": {
     "protocol": { "const": "QCAL-NODE/1.0" },
     "node_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
-    "layer": { "type": "string", "enum": ["axiom", "mathematics", "formal", "physics", "consciousness", "experiment", "memory", "orchestration"] },
+    "layer": { "type": "string", "minLength": 1 },
     "version": { "type": "string", "minLength": 1 },
     "f0_hz": { "type": "number", "const": 141.7001 },
     "psi": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
     "status": {
       "type": "string",
-      "enum": ["PROPOSED", "DEFINED", "IMPLEMENTED", "FORMAL_PASS", "EXPERIMENTAL_PASS", "REPRODUCED", "REVIEW", "ARCHIVED", "FAIL"]
+      "enum": ["PROPOSED", "DEFINED", "IMPLEMENTED", "FORMAL_PASS", "EXPERIMENTAL_PASS", "REPRODUCED", "REVIEW", "ARCHIVED", "FAIL", "ACTIVO", "INACTIVO", "UNKNOWN"]
     },
     "commit": { "type": ["string", "null"] },
     "timestamp": { "type": ["string", "null"], "format": "date-time" },

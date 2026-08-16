@@ -1,0 +1,51 @@
+name: NOESIS-QCAL Control Plane
+
+on:
+  push:
+    branches: [main, 'feat/noesis-control-plane-v*']
+    paths:
+      - 'protocol/**'
+      - 'registry/NODE_CATALOG.json'
+      - 'qcal.json'
+      - 'scripts/noesis_control_plane.py'
+      - 'tests/test_noesis_control_plane.py'
+      - '.github/workflows/noesis-control-plane.yml'
+  pull_request:
+    paths:
+      - 'protocol/**'
+      - 'registry/NODE_CATALOG.json'
+      - 'qcal.json'
+      - 'scripts/noesis_control_plane.py'
+      - 'tests/test_noesis_control_plane.py'
+      - '.github/workflows/noesis-control-plane.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  control-plane:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run NOESIS control-plane tests
+        run: python -m unittest -v tests/test_noesis_control_plane.py
+
+      - name: Generate checkpoint
+        run: python scripts/noesis_control_plane.py --checkpoint | tee noesis-checkpoint.log
+
+      - name: Upload checkpoint artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: noesis-qcal-checkpoint-${{ github.sha }}
+          path: |
+            evidence/checkpoints/*.json
+            noesis-checkpoint.log
+          if-no-files-found: error

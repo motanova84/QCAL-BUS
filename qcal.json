@@ -9,6 +9,10 @@
         "QCAL_SATURATION_CYCLES": "3",
         "QCAL_EMISSION_BASE": "888"
       }
+    },
+    "noesis-control-plane": {
+      "command": "python",
+      "args": ["scripts/noesis_mcp_server.py"]
     }
   },
   "node_meta": {
@@ -25,6 +29,8 @@
     "event_contract": "protocol/qcal-event.schema.json",
     "consciousness_engine": "protocol/CONSCIOUSNESS_ENGINE.md",
     "claim_state_machine": "protocol/CLAIM_STATE_MACHINE.md",
-    "evidence_plane": "evidence/README.md"
+    "evidence_plane": "evidence/README.md",
+    "checkpoint_engine": "scripts/noesis_control_plane.py",
+    "mcp_server": "scripts/noesis_mcp_server.py"
   }
 }
