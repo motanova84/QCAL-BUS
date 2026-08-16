@@ -36,7 +36,7 @@ jobs:
           python-version: '3.12'
 
       - name: Run NOESIS control-plane tests
-        run: python -m pytest -q tests/test_noesis_control_plane.py
+        run: python -m unittest -v tests/test_noesis_control_plane.py
 
       - name: Generate checkpoint
         run: python scripts/noesis_control_plane.py --checkpoint | tee noesis-checkpoint.log
