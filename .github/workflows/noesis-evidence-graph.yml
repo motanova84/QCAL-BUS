@@ -1,0 +1,42 @@
+name: NOESIS Evidence Graph
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build deterministic evidence graph
+        run: |
+          python -m noesis.evidence_graph_builder \
+            --repository "motanova84/QCAL-BUS" \
+            --output checkpoints/checkpoint_v1.json
+      - name: Verify deterministic digest
+        run: |
+          python -m noesis.evidence_graph_builder \
+            --repository "motanova84/QCAL-BUS" \
+            --output /tmp/checkpoint_repeat.json
+          python - <<'PY'
+          import json
+          a=json.load(open('checkpoints/checkpoint_v1.json'))
+          b=json.load(open('/tmp/checkpoint_repeat.json'))
+          assert a['sha256'] == b['sha256'], 'non-deterministic graph digest'
+          print('deterministic sha256:', a['sha256'])
+          PY
+      - name: Upload checkpoint
+        uses: actions/upload-artifact@v4
+        with:
+          name: noesis-evidence-checkpoint
+          path: checkpoints/checkpoint_v1.json
