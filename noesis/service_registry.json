@@ -1,0 +1,78 @@
+{
+  "schema": "NOESIS-SERVICE-REGISTRY/1.0",
+  "policy": {
+    "default_mode": "read_only",
+    "mutations_allowed": false,
+    "unknown_services": "do_not_probe",
+    "reference_frequency_hz": 141.7001
+  },
+  "services": [
+    {
+      "id": "bal003.qcal_symbio",
+      "node_id": "BAL003",
+      "host": "195.201.219.237",
+      "port": 8844,
+      "transport": "http",
+      "paths": ["/estado", "/servicios", "/reactor", "/ecosistema"],
+      "role": "qcal_symbio_bridge",
+      "access": "read_only",
+      "health_mode": "http_get"
+    },
+    {
+      "id": "bal003.monitor",
+      "node_id": "BAL003",
+      "host": "195.201.219.237",
+      "port": 5050,
+      "transport": "http",
+      "paths": ["/health", "/status", "/ecosystem"],
+      "role": "monitor",
+      "access": "read_only",
+      "health_mode": "http_get"
+    },
+    {
+      "id": "bal003.lndhub",
+      "node_id": "BAL003",
+      "host": "195.201.219.237",
+      "port": 8000,
+      "transport": "tcp",
+      "paths": [],
+      "role": "lndhub",
+      "access": "read_only",
+      "health_mode": "tcp_connect"
+    },
+    {
+      "id": "bal003.bitcoin",
+      "node_id": "BAL003",
+      "host": "195.201.219.237",
+      "port": 8505,
+      "transport": "tcp",
+      "paths": [],
+      "role": "bitcoin_core",
+      "access": "read_only",
+      "health_mode": "tcp_connect"
+    },
+    {
+      "id": "bal003.lnd",
+      "node_id": "BAL003",
+      "host": "195.201.219.237",
+      "port": 9735,
+      "transport": "tcp",
+      "paths": [],
+      "role": "lnd",
+      "access": "read_only",
+      "health_mode": "tcp_connect"
+    },
+    {
+      "id": "bal003.ssh",
+      "node_id": "BAL003",
+      "host": "195.201.219.237",
+      "port": 22,
+      "transport": "tcp",
+      "paths": [],
+      "role": "ssh",
+      "access": "read_only",
+      "health_mode": "tcp_connect",
+      "notes": "Reachability only. No SSH authentication or command execution is performed by Discovery Layer."
+    }
+  ]
+}
