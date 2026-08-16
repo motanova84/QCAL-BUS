@@ -1,7 +1,4 @@
-import json
-from pathlib import Path
-
-from noesis.discovery_layer import discover, load_registry, probe_tcp
+from noesis.discovery_layer import discover, load_registry
 
 
 def test_registry_is_explicitly_read_only():
@@ -13,12 +10,16 @@ def test_registry_is_explicitly_read_only():
 def test_discovery_targets_only_declared_services(monkeypatch):
     calls = []
 
-    def fake_tcp(service, timeout):
+    def fake_probe(service, *args):
         calls.append((service["host"], service["port"]))
-        return type("Result", (), {"as_dict": lambda self: {"service_id": service["id"], "state": "REACHABLE"}})()
+        return type(
+            "Result",
+            (),
+            {"as_dict": lambda self: {"service_id": service["id"], "state": "REACHABLE"}},
+        )()
 
-    monkeypatch.setattr("noesis.discovery_layer.probe_tcp", fake_tcp)
-    monkeypatch.setattr("noesis.discovery_layer.probe_http", fake_tcp)
+    monkeypatch.setattr("noesis.discovery_layer.probe_tcp", fake_probe)
+    monkeypatch.setattr("noesis.discovery_layer.probe_http", fake_probe)
     result = discover(timeout=0.01)
     declared = {(s["host"], s["port"]) for s in load_registry()["services"]}
     assert set(calls).issubset(declared)
