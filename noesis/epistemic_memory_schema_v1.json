@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "NOESIS Epistemic Memory v1",
+  "type": "object",
+  "required": ["schema", "records"],
+  "properties": {
+    "schema": {"const": "NOESIS-EPISTEMIC-MEMORY/1.0"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["failure_id", "target_id", "repository", "commit", "strategy", "result", "failure_class", "root_cause", "reproducible", "lesson"],
+        "properties": {
+          "failure_id": {"type": "string"},
+          "target_id": {"type": "string"},
+          "repository": {"type": "string"},
+          "commit": {"type": "string"},
+          "strategy": {"type": "string"},
+          "result": {"const": "FAIL"},
+          "failure_class": {"enum": ["LOGICAL", "DEPENDENCY", "DOMAIN", "IMPLEMENTATION", "EXPERIMENTAL", "COUNTEREXAMPLE"]},
+          "root_cause": {"type": "string"},
+          "reproducible": {"type": "boolean"},
+          "lesson": {"type": "string"},
+          "invalidates": {"type": "array", "items": {"type": "string"}},
+          "enables": {"type": "array", "items": {"type": "string"}},
+          "next_candidates": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}
