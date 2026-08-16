@@ -18,6 +18,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Run NOESIS unit tests
+        run: python -m pytest -q tests/test_epistemic_auditor.py tests/test_critical_bottleneck.py
       - name: Build deterministic evidence graph
         run: |
           python -m noesis.evidence_graph_builder \
@@ -35,8 +37,15 @@ jobs:
           assert a['sha256'] == b['sha256'], 'non-deterministic graph digest'
           print('deterministic sha256:', a['sha256'])
           PY
-      - name: Upload checkpoint
+      - name: Compute critical bottleneck directive
+        run: |
+          python -m noesis.critical_bottleneck \
+            --graph checkpoints/checkpoint_v1.json \
+            --output checkpoints/critical_bottleneck_v1.json
+      - name: Upload epistemic checkpoint
         uses: actions/upload-artifact@v4
         with:
-          name: noesis-evidence-checkpoint
-          path: checkpoints/checkpoint_v1.json
+          name: noesis-epistemic-checkpoint
+          path: |
+            checkpoints/checkpoint_v1.json
+            checkpoints/critical_bottleneck_v1.json
