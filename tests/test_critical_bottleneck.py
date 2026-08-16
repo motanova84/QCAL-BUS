@@ -36,7 +36,12 @@ def test_policy_never_promotes_epistemic_state():
 
 
 def test_ties_are_deterministic():
-    g = graph()
-    g["nodes"][-1]["node_id"] = "n:aaa"
+    g = {
+        "nodes": [
+            {"node_id": "n:z", "kind": "proof_obligation", "label": "z", "status": "UNRESOLVED"},
+            {"node_id": "n:a", "kind": "proof_obligation", "label": "a", "status": "UNRESOLVED"},
+        ],
+        "edges": [],
+    }
     ranked = rank_bottlenecks(g)
-    assert [x.node_id for x in ranked] == sorted(x.node_id for x in ranked)
+    assert [x.node_id for x in ranked] == ["n:a", "n:z"]
