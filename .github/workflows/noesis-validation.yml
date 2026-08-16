@@ -1,0 +1,76 @@
+name: NOESIS Validation
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  noesis-validation:
+    name: NOESIS Discovery + Full CI
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install test dependencies
+        run: pip install flask pytest
+
+      - name: Run NOESIS discovery tests
+        env:
+          QCAL_REAL_TESTS: "0"
+        run: pytest tests/test_discovery_layer.py -v
+
+      - name: Run complete test suite
+        env:
+          QCAL_REAL_TESTS: "0"
+        run: pytest tests/ -v
+
+      - name: Verify node catalog invariant
+        env:
+          QCAL_REAL_TESTS: "0"
+        run: |
+          python - <<'PY'
+          import json
+          import sys
+          data = json.load(open("registry/NODE_CATALOG.json", encoding="utf-8"))
+          declared = data["meta"]["total_nodes"]
+          actual = len(data["nodes"])
+          if actual != declared:
+              print(f"ERROR: meta.total_nodes={declared}, actual={actual}", file=sys.stderr)
+              raise SystemExit(1)
+          print(f"OK: node catalog invariant ({actual})")
+          PY
+
+      - name: Verify canonical QCAL frequency
+        run: |
+          python - <<'PY'
+          from noesis.discovery_layer import load_registry
+          registry = load_registry()
+          assert registry["policy"]["reference_frequency_hz"] == 141.7001
+          print("OK: f0 = 141.7001 Hz")
+          PY
+
+      - name: Build deterministic NOESIS snapshot
+        run: |
+          python - <<'PY'
+          from noesis.snapshot import build_snapshot
+          snapshot = build_snapshot()
+          assert snapshot["schema"] == "NOESIS-SNAPSHOT/1.0"
+          assert snapshot["reference_frequency_hz"] == 141.7001
+          assert snapshot["snapshot_sha256"]
+          print("OK: deterministic NOESIS snapshot", snapshot["snapshot_sha256"])
+          PY
