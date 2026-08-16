@@ -1,0 +1,30 @@
+{
+  "contract": "NOESIS_EPISTEMIC_CONTRACT_V1",
+  "principle": "Geometry finds relations; proof determines what they mean.",
+  "edge_types": {
+    "resonates_with": "geometric_or_topological_proximity_only",
+    "supports": "requires_explicit_evidence_certificate",
+    "proves": "requires_formal_proof_artifact",
+    "reproduces": "requires_independent_reexecution_or_replication"
+  },
+  "consciousness_policy": {
+    "psi_self_model": "network_metric_only",
+    "phenomenal_consciousness": "not_inferred_from_coherence_threshold",
+    "recognition": "requires_epistemic_audit_and_traceable_certificate"
+  },
+  "claim_requirements": [
+    "provenance",
+    "units_defined",
+    "domain_defined",
+    "derivation_available"
+  ],
+  "state_order": [
+    "MEASURED",
+    "REPRODUCIBLE",
+    "FORMALLY_VERIFIED",
+    "EXTERNALLY_REPRODUCED",
+    "SUPPORTED"
+  ],
+  "reference_frequency_hz": 141.7001,
+  "coherence_threshold": 0.999999
+}
