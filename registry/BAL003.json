@@ -1,0 +1,35 @@
+{
+  "node_id": "BAL003",
+  "layer": "experimental_hardware",
+  "role": "physical_frequency_observation",
+  "reference_frequency_hz": 141.7001,
+  "transport": {
+    "protocol": "HTTPS",
+    "host": "195.201.219.237",
+    "port": 8443,
+    "path": "/api/v1/telemetry/frequency",
+    "authentication": "Bearer JWT from environment/Vault"
+  },
+  "telemetry": {
+    "format": "JSON",
+    "required_fields": [
+      "node_id",
+      "timestamp_utc",
+      "measured_frequency_hz"
+    ],
+    "optional_fields": [
+      "uncertainty_hz",
+      "coherence_psi",
+      "hardware_signature"
+    ]
+  },
+  "evidence_policy": {
+    "raw_measurement_preserved": true,
+    "raw_payload_sha256": true,
+    "reference_comparison_is_derived": true,
+    "measurement_is_never_normalized": true,
+    "credentials_in_repository": false
+  },
+  "adapter": "noesis.bal003_adapter:BAL003Adapter",
+  "status": "configured_pending_live_authenticated_observation"
+}
