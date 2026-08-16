@@ -1,0 +1,53 @@
+name: NOESIS Daily Sorry Orchestrator
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  discover-and-prioritize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout QCAL-BUS
+        uses: actions/checkout@v4
+
+      - name: Build daily resolution queue
+        run: |
+          mkdir -p artifacts/noesis
+          python - <<'PY'
+          import json, pathlib, datetime
+          out = {
+            "protocol": "NOESIS-SORRY-RESOLUTION/1.0",
+            "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            "policy": {
+              "max_candidates_per_cycle": 3,
+              "never_claim_success_without_build": True,
+              "never_replace_axioms_with_theorems": True,
+              "require_reproducible_commit": True,
+              "human_review_required_for_merge": True
+            },
+            "status": "DISCOVERY_ONLY",
+            "next_step": "Populate candidates from the ecosystem audit and resolve only candidates whose mathematical context is machine-auditable."
+          }
+          pathlib.Path('artifacts/noesis/daily_resolution_queue.json').write_text(json.dumps(out, indent=2), encoding='utf-8')
+          PY
+
+      - name: Upload queue artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: noesis-daily-resolution-queue
+          path: artifacts/noesis/daily_resolution_queue.json
+
+      - name: Create daily tracking issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --title "NOESIS daily resolution cycle — ${{ github.run_number }}" \
+            --body "## NOESIS-SORRY-RESOLUTION/1.0\n\nDaily cycle generated. Candidates must be selected from machine-auditable evidence.\n\n**Invariant:** no candidate is marked solved until the target repository builds/tests successfully on the resulting commit.\n\n**Epistemic guardrails:** axioms are not silently converted into theorems; failed attempts are recorded; every successful proof receives commit and build provenance." \
+            --label "enhancement" || true
