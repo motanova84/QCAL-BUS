@@ -1,0 +1,43 @@
+name: NOESIS Cathedral Discovery
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout QCAL-BUS
+        uses: actions/checkout@v4
+
+      - name: Checkout formalization source
+        uses: actions/checkout@v4
+        with:
+          repository: motanova84/qcal-formalization
+          path: ecosystem/qcal-formalization
+
+      - name: Checkout Riemann-adelic source
+        uses: actions/checkout@v4
+        with:
+          repository: motanova84/Riemann-adelic
+          path: ecosystem/Riemann-adelic
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Discover proof obligations
+        run: |
+          python noesis/cathedral_engine.py ecosystem --repository qcal-formalization+Riemann-adelic --output noesis-cathedral.json
+
+      - name: Upload discovery artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: noesis-cathedral-discovery
+          path: noesis-cathedral.json
