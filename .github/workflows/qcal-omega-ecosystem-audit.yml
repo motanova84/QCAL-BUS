@@ -1,0 +1,20 @@
+name: QCAL Ω Ecosystem Audit
+on:
+  push:
+    paths: ['audit/**']
+  pull_request:
+    paths: ['audit/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ecosystem-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Validate all registered Omega ledgers
+        env:
+          AUDIT_REF: main
+        run: python audit/validate_ecosystem.py

@@ -1,0 +1,15 @@
+{
+  "ecosystem":"QCAL / NOESIS",
+  "version":"1.0.1",
+  "audit_standard":"QCAL Ω Audit Ledger",
+  "reference_frequency_hz":141.7001,
+  "coherence_target":0.999999,
+  "repositories":[
+    {"name":"qcal-formalization","role":"formal evidence anchor","ledger":"https://raw.githubusercontent.com/motanova84/qcal-formalization/main/ledger/omega.json"},
+    {"name":"Riemann-adelic","role":"RH / adelic formalization","ledger":"https://raw.githubusercontent.com/motanova84/Riemann-adelic/main/ledger/omega.json"},
+    {"name":"141hz","role":"empirical 141.7 Hz analysis","ledger":"https://raw.githubusercontent.com/motanova84/141hz/main/ledger/omega.json"}
+  ],
+  "inheritance":"downstream status cannot exceed weakest claim dependency",
+  "axiom_policy":"AXIOM_* roots are boundary assumptions and are not evidence-bearing claims",
+  "non_destructive":true
+}
