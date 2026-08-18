@@ -16,5 +16,5 @@ jobs:
         with: {python-version: '3.11'}
       - name: Validate all registered Omega ledgers
         env:
-          AUDIT_REF: audit/qcal-omega-ledger-v1.0.1
+          AUDIT_REF: main
         run: python audit/validate_ecosystem.py
