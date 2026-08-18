@@ -34,6 +34,9 @@ jobs:
           QCAL_REAL_TESTS: "0"
         run: pytest tests/test_discovery_layer.py -v
 
+      - name: Run Ω bridge contract tests
+        run: pytest tests/test_noesis_omega_bridge.py -v
+
       - name: Run complete test suite
         env:
           QCAL_REAL_TESTS: "0"

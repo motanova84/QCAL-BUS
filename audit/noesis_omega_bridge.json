@@ -1,0 +1,20 @@
+{
+  "schema": "qcal-omega-bus-bridge/1.0",
+  "bus": "motanova84/QCAL-BUS",
+  "public_orchestrator": "motanova84/Noesis",
+  "noesis_audit_pr": "https://github.com/motanova84/Noesis/pull/2",
+  "reference": {
+    "f0_hz": 141.7001,
+    "coherence_threshold": 0.999999
+  },
+  "mode": "read-only-evidence-bridge",
+  "mutations": false,
+  "source_of_truth": "Noesis audit/qcal_omega_ledger.json",
+  "transport": "MCP JSON-RPC",
+  "exposure": {
+    "audit_ledger": "read-only",
+    "dependency_graph": "read-only",
+    "evidence_status": "read-only"
+  },
+  "integrity_rule": "Never promote evidence status from the bus; status changes require the source artifact and its declared validation path."
+}
